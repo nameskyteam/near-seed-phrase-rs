@@ -12,8 +12,8 @@ fn main() {
         NearPath::Master
     );
 
-    println!("ed25519:{}", private_key);
-    println!("ed25519:{}", public_key);
+    println!("{}", private_key);
+    println!("{}", public_key);
 }
 
 fn get_near_keypair(seed_phrase: &str, pass_phrase: &str, path: NearPath) -> (String, String) {
