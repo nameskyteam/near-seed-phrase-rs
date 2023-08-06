@@ -1,0 +1,20 @@
+[package]
+name = "near_seed_phrase_to_private_key"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bip39 = "2.0.0"
+slip10 = "0.4.3"
+ed25519-dalek = "1.0.1"
+bs58 = "0.5.0"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true
