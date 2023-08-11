@@ -11,10 +11,10 @@ pub trait ToPublicKeyString {
     fn to_public_key_string(&self) -> String;
 }
 
-pub trait TryFromSecretKeyString: Sized {
+pub trait FromSecretKeyStr: Sized {
     type Error;
 
-    fn try_from_secret_key_string(secret: &str) -> Result<Self, Self::Error>;
+    fn from_secret_key_str(secret: &str) -> Result<Self, Self::Error>;
 }
 
 impl ToSecretKeyString for Keypair {
@@ -40,12 +40,12 @@ impl ToPublicKeyString for Keypair {
     }
 }
 
-impl TryFromSecretKeyString for Keypair {
+impl FromSecretKeyStr for Keypair {
     type Error = AnyhowError;
 
     /// Convert secret key string to [Keypair](ed25519_dalek::Keypair).
     /// Note that the secret key should not only contains private key but also contains public key
-    fn try_from_secret_key_string(secret: &str) -> Result<Self, Self::Error> {
+    fn from_secret_key_str(secret: &str) -> Result<Self, Self::Error> {
         let secret = if secret.to_lowercase().starts_with(ED25519_PREFIX) {
             &secret[ED25519_PREFIX.len()..]
         } else {
