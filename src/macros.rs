@@ -41,7 +41,7 @@ macro_rules! __keypair {
                     .parse::<$crate::NearSeedPhrase>()
                     .expect("Failed to parse `NearSeedPhrase`"),
             ),
-            std::borrow::Borrow::borrow(&$password),
+            $password.as_ref(),
             std::borrow::Borrow::borrow(
                 &$path
                     .parse::<$crate::NearDerivationPath>()
