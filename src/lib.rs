@@ -83,7 +83,7 @@ mod test {
     }
 
     #[test]
-    fn test_macros() {
+    fn test_macros_with_default_password_default_path() {
         let secret = secret!(PHRASE);
         let public = public!(PHRASE);
         assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
@@ -101,7 +101,7 @@ mod test {
     }
 
     #[test]
-    fn test_macros_with_password() {
+    fn test_macros_with_test_password_default_path() {
         let secret = secret!(PHRASE, TEST_PASSWORD, NearDerivationPath::default());
         let public = public!(PHRASE, TEST_PASSWORD, NearDerivationPath::default());
         assert_eq!(secret, SECRET_WITH_TEST_PASSWORD_DEFAULT_PATH);
@@ -109,7 +109,7 @@ mod test {
     }
 
     #[test]
-    fn test_macros_with_ledger() {
+    fn test_macros_with_default_password_ledger_path() {
         let secret = secret!(PHRASE, "", NearDerivationPath::ledger());
         let public = public!(PHRASE, "", NearDerivationPath::ledger());
         assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_LEDGER_PATH);

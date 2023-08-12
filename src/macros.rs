@@ -70,7 +70,6 @@ macro_rules! keypair {
 
         let phrase = $phrase.parse().expect("Failed to parse `NearSeedPhrase`");
         let path = $path.parse().expect("Failed to parse `NearDerivationPath`");
-        let password = $password.as_ref();
-        derive_keypair(&phrase, password, &path).expect("Failed to derive keypair")
+        derive_keypair(&phrase, $password.as_ref(), &path).expect("Failed to derive keypair")
     }};
 }
