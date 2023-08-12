@@ -8,7 +8,7 @@ use crate::errors::{AnyhowError, AnyhowResult, IntoAnyhowError};
 use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 use slip10::{derive_key_from_path, Curve};
 
-pub use convert::{FromSecretKeyStr, ToPublicKeyString, ToSecretKeyString};
+pub use convert::{FromSecretKeyStr, StringKeypair, ToPublicKeyString, ToSecretKeyString};
 pub use path::NearDerivationPath;
 pub use phrase::{NearSeedPhrase, WordCount};
 
@@ -30,8 +30,8 @@ pub fn derive_keypair(
 #[cfg(test)]
 mod test {
     use crate::{
-        derive_keypair, public, secret, FromSecretKeyStr, NearDerivationPath, NearSeedPhrase,
-        ToPublicKeyString, ToSecretKeyString,
+        convert, derive_keypair, FromSecretKeyStr, NearDerivationPath, NearSeedPhrase,
+        StringKeypair, ToPublicKeyString, ToSecretKeyString,
     };
     use ed25519_dalek::Keypair;
 
@@ -83,35 +83,31 @@ mod test {
     }
 
     #[test]
-    fn test_macros_with_default_password_default_path() {
-        let secret = secret!(PHRASE);
-        let public = public!(PHRASE);
+    fn test_macro_with_default_password_default_path() {
+        let StringKeypair { secret, public } = convert!(PHRASE);
         assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
         assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
 
-        let secret = secret!(PHRASE, "");
-        let public = public!(PHRASE, "");
+        let StringKeypair { secret, public } = convert!(PHRASE, "");
         assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
         assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
 
-        let secret = secret!(PHRASE, "", NearDerivationPath::default());
-        let public = public!(PHRASE, "", NearDerivationPath::default());
+        let StringKeypair { secret, public } = convert!(PHRASE, "", NearDerivationPath::default());
         assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
         assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
     }
 
     #[test]
     fn test_macros_with_test_password_default_path() {
-        let secret = secret!(PHRASE, TEST_PASSWORD, NearDerivationPath::default());
-        let public = public!(PHRASE, TEST_PASSWORD, NearDerivationPath::default());
+        let StringKeypair { secret, public } =
+            convert!(PHRASE, TEST_PASSWORD, NearDerivationPath::default());
         assert_eq!(secret, SECRET_WITH_TEST_PASSWORD_DEFAULT_PATH);
         assert_eq!(public, PUBLIC_WITH_TEST_PASSWORD_DEFAULT_PATH);
     }
 
     #[test]
     fn test_macros_with_default_password_ledger_path() {
-        let secret = secret!(PHRASE, "", NearDerivationPath::ledger());
-        let public = public!(PHRASE, "", NearDerivationPath::ledger());
+        let StringKeypair { secret, public } = convert!(PHRASE, "", NearDerivationPath::ledger());
         assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_LEDGER_PATH);
         assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_LEDGER_PATH);
     }

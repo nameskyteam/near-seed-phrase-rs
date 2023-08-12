@@ -1,6 +1,12 @@
 use crate::AnyhowError;
 use ed25519_dalek::Keypair;
 
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct StringKeypair {
+    pub secret: String,
+    pub public: String,
+}
+
 const ED25519_PREFIX: &str = "ed25519:";
 
 pub trait ToSecretKeyString {
