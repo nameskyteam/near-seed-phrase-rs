@@ -8,11 +8,11 @@ use crate::errors::{AnyhowError, AnyhowResult, IntoAnyhowError};
 use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 use slip10::{derive_key_from_path, Curve};
 
-pub use convert::{FromSecretKeyStr, ToPublicKeyString, ToRef, ToSecretKeyString};
+pub use convert::{FromSecretKeyStr, ToPublicKeyString, ToSecretKeyString};
 pub use path::NearPath;
 pub use phrase::NearSeedPhrase;
 
-/// Derive ed25519 keypair from given seed phrase, password and derivation path.
+/// Derive ed25519 [`Keypair`](ed25519_dalek::Keypair) from given seed phrase, password and derivation path.
 pub fn derive_keypair(
     phrase: &NearSeedPhrase,
     password: &str,

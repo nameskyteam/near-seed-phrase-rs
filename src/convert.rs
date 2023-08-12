@@ -1,4 +1,4 @@
-use crate::{AnyhowError, NearPath, NearSeedPhrase};
+use crate::AnyhowError;
 use ed25519_dalek::Keypair;
 
 const ED25519_PREFIX: &str = "ed25519:";
@@ -18,8 +18,8 @@ pub trait FromSecretKeyStr: Sized {
 }
 
 impl ToSecretKeyString for Keypair {
-    /// Convert [Keypair](ed25519_dalek::Keypair) to ed25519 secret key string.
-    /// Note that the secret key not only contains private key but also contains public key
+    /// Convert [`Keypair`](ed25519_dalek::Keypair) to ed25519 secret key string.
+    /// Note that the secret key not only contains private key but also contains public key.
     fn to_secret_key_string(&self) -> String {
         format!(
             "{}{}",
@@ -30,7 +30,7 @@ impl ToSecretKeyString for Keypair {
 }
 
 impl ToPublicKeyString for Keypair {
-    /// Convert [Keypair](ed25519_dalek::Keypair) to ed25519 public key string
+    /// Convert ed25519 [`Keypair`](ed25519_dalek::Keypair) to public key string.
     fn to_public_key_string(&self) -> String {
         format!(
             "{}{}",
@@ -43,8 +43,8 @@ impl ToPublicKeyString for Keypair {
 impl FromSecretKeyStr for Keypair {
     type Error = AnyhowError;
 
-    /// Convert secret key string to [Keypair](ed25519_dalek::Keypair).
-    /// Note that the secret key should not only contains private key but also contains public key
+    /// Convert ed25519 secret key string to [`Keypair`](ed25519_dalek::Keypair).
+    /// Note that the secret key should not only contains private key but also contains public key.
     fn from_secret_key_str(secret: &str) -> Result<Self, Self::Error> {
         let secret = if secret.to_lowercase().starts_with(ED25519_PREFIX) {
             &secret[ED25519_PREFIX.len()..]
@@ -55,32 +55,3 @@ impl FromSecretKeyStr for Keypair {
         Ok(Keypair::from_bytes(&bytes)?)
     }
 }
-
-/// Implement for an owned type to convert to its directly reference.
-/// # Example
-/// ```
-/// use near_seed_phrase::ToRef;
-///
-/// struct MyStruct;
-///
-/// impl ToRef for MyStruct {}
-///
-/// let m = MyStruct;
-/// let p1 = m.to_ref();     // `&MyStruct`
-/// let p2 = (&m).to_ref();  // `&MyStruct`
-/// let p3 = (&&m).to_ref(); // `&MyStruct`
-/// ```
-#[doc(hidden)]
-pub trait ToRef {
-    fn to_ref(&self) -> &Self {
-        self
-    }
-}
-
-impl ToRef for String {}
-
-impl ToRef for str {}
-
-impl ToRef for NearSeedPhrase {}
-
-impl ToRef for NearPath {}

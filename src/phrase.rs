@@ -1,10 +1,19 @@
 use crate::errors::AnyhowError;
+use crate::AnyhowResult;
 use bip39::Mnemonic;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct NearSeedPhrase(pub Mnemonic);
+
+impl NearSeedPhrase {
+    /// Used in macro [`keypair!`].
+    #[doc(hidden)]
+    pub fn parse(&self) -> AnyhowResult<Self> {
+        Ok(self.clone())
+    }
+}
 
 impl From<Mnemonic> for NearSeedPhrase {
     fn from(phrase: Mnemonic) -> Self {

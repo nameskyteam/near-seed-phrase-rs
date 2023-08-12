@@ -11,16 +11,22 @@
 #[macro_export]
 macro_rules! secret {
     ($phrase:expr) => {{
-        let keypair = $crate::keypair!($phrase, "", $crate::NearPath::default());
-        $crate::ToSecretKeyString::to_secret_key_string(&keypair)
+        use $crate::{keypair, ToSecretKeyString};
+
+        let keypair = keypair!($phrase, "", $crate::NearPath::default());
+        keypair.to_secret_key_string()
     }};
     ($phrase:expr, $password:expr) => {{
-        let keypair = $crate::keypair!($phrase, $password, $crate::NearPath::default());
-        $crate::ToSecretKeyString::to_secret_key_string(&keypair)
+        use $crate::{keypair, ToSecretKeyString};
+
+        let keypair = keypair!($phrase, $password, $crate::NearPath::default());
+        keypair.to_secret_key_string()
     }};
     ($phrase:expr, $password:expr, $path:expr) => {{
-        let keypair = $crate::keypair!($phrase, $password, $path);
-        $crate::ToSecretKeyString::to_secret_key_string(&keypair)
+        use $crate::{keypair, ToSecretKeyString};
+
+        let keypair = keypair!($phrase, $password, $path);
+        keypair.to_secret_key_string()
     }};
 }
 
@@ -37,16 +43,22 @@ macro_rules! secret {
 #[macro_export]
 macro_rules! public {
     ($phrase:expr) => {{
-        let keypair = $crate::keypair!($phrase, "", $crate::NearPath::default());
-        $crate::ToPublicKeyString::to_public_key_string(&keypair)
+        use $crate::{keypair, ToPublicKeyString};
+
+        let keypair = keypair!($phrase, "", $crate::NearPath::default());
+        keypair.to_public_key_string()
     }};
     ($phrase:expr, $password:expr) => {{
-        let keypair = $crate::keypair!($phrase, $password, $crate::NearPath::default());
-        $crate::ToPublicKeyString::to_public_key_string(&keypair)
+        use $crate::{keypair, ToPublicKeyString};
+
+        let keypair = keypair!($phrase, $password, $crate::NearPath::default());
+        keypair.to_public_key_string()
     }};
     ($phrase:expr, $password:expr, $path:expr) => {{
-        let keypair = $crate::keypair!($phrase, $password, $path);
-        $crate::ToPublicKeyString::to_public_key_string(&keypair)
+        use $crate::{keypair, ToPublicKeyString};
+
+        let keypair = keypair!($phrase, $password, $path);
+        keypair.to_public_key_string()
     }};
 }
 
@@ -54,23 +66,11 @@ macro_rules! public {
 #[macro_export]
 macro_rules! keypair {
     ($phrase:expr, $password:expr, $path:expr) => {{
-        use $crate::ToRef;
+        use $crate::derive_keypair;
 
-        let phrase = $phrase
-            .to_ref()
-            .clone()
-            .try_into()
-            .expect($crate::errors::ERR_FAILED_TO_PARSE_NEAR_SEED_PHRASE);
-
-        let path = $path
-            .to_ref()
-            .clone()
-            .try_into()
-            .expect($crate::errors::ERR_FAILED_TO_PARSE_NEAR_PATH);
-
-        let password = $password.to_ref();
-
-        $crate::derive_keypair(&phrase, password, &path)
-            .expect($crate::errors::ERR_FAILED_TO_DERIVE_KEYPAIR)
+        let phrase = $phrase.parse().expect("Failed to parse `NearSeedPhrase`");
+        let path = $path.parse().expect("Failed to parse `NearPath`");
+        let password = $password.as_ref();
+        derive_keypair(&phrase, password, &path).expect("Failed to derive keypair")
     }};
 }
