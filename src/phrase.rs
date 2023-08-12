@@ -48,9 +48,10 @@ impl NearSeedPhrase {
 }
 
 impl NearSeedPhrase {
+    /// Private method used in macro [`__keypair!`](crate::__keypair).
     #[doc(hidden)]
-    pub fn parse(&self) -> AnyhowResult<Self> {
-        Ok(self.clone())
+    pub fn parse<T>(&self) -> AnyhowResult<&Self> {
+        Ok(self)
     }
 }
 

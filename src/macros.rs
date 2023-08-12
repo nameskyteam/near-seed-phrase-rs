@@ -66,10 +66,20 @@ macro_rules! public {
 #[macro_export]
 macro_rules! __keypair {
     ($phrase:expr, $password:expr, $path:expr) => {{
-        use $crate::derive_keypair;
+        use std::borrow::Borrow;
+        use $crate::{derive_keypair, NearDerivationPath, NearSeedPhrase};
 
-        let phrase = $phrase.parse().expect("Failed to parse `NearSeedPhrase`");
-        let path = $path.parse().expect("Failed to parse `NearDerivationPath`");
-        derive_keypair(&phrase, $password.as_ref(), &path).expect("Failed to derive keypair")
+        derive_keypair(
+            $phrase
+                .parse::<NearSeedPhrase>()
+                .expect("Failed to parse `NearSeedPhrase`")
+                .borrow(),
+            $password.as_ref(),
+            $path
+                .parse::<NearDerivationPath>()
+                .expect("Failed to parse `NearDerivationPath`")
+                .borrow(),
+        )
+        .expect("Failed to derive keypair")
     }};
 }
