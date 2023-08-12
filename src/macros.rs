@@ -54,13 +54,23 @@ macro_rules! public {
 #[macro_export]
 macro_rules! keypair {
     ($phrase:expr, $password:expr, $path:expr) => {{
-        let phrase = $crate::NearSeedPhrase::try_from($phrase.clone())
+        use $crate::ToRef;
+
+        let phrase = $phrase
+            .to_ref()
+            .clone()
+            .try_into()
             .expect($crate::errors::ERR_FAILED_TO_PARSE_NEAR_SEED_PHRASE);
 
-        let path = $crate::NearPath::try_from($path.clone())
+        let path = $path
+            .to_ref()
+            .clone()
+            .try_into()
             .expect($crate::errors::ERR_FAILED_TO_PARSE_NEAR_PATH);
 
-        $crate::derive_keypair(&phrase, $password, &path)
+        let password = $password.to_ref();
+
+        $crate::derive_keypair(&phrase, password, &path)
             .expect($crate::errors::ERR_FAILED_TO_DERIVE_KEYPAIR)
     }};
 }

@@ -1,4 +1,4 @@
-use crate::AnyhowError;
+use crate::{AnyhowError, NearPath, NearSeedPhrase};
 use ed25519_dalek::Keypair;
 
 const ED25519_PREFIX: &str = "ed25519:";
@@ -55,3 +55,32 @@ impl FromSecretKeyStr for Keypair {
         Ok(Keypair::from_bytes(&bytes)?)
     }
 }
+
+/// Implement for an owned type to convert to its directly reference.
+/// # Example
+/// ```
+/// use near_seed_phrase::ToRef;
+///
+/// struct MyStruct;
+///
+/// impl ToRef for MyStruct {}
+///
+/// let m = MyStruct;
+/// let p1 = m.to_ref();     // `&MyStruct`
+/// let p2 = (&m).to_ref();  // `&MyStruct`
+/// let p3 = (&&m).to_ref(); // `&MyStruct`
+/// ```
+#[doc(hidden)]
+pub trait ToRef {
+    fn to_ref(&self) -> &Self {
+        self
+    }
+}
+
+impl ToRef for String {}
+
+impl ToRef for str {}
+
+impl ToRef for NearSeedPhrase {}
+
+impl ToRef for NearPath {}
