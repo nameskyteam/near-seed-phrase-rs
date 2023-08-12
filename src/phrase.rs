@@ -45,11 +45,6 @@ impl NearSeedPhrase {
     pub fn generate(word_count: WordCount) -> AnyhowResult<Self> {
         Ok(Self(Mnemonic::generate(word_count.unwrap())?))
     }
-
-    /// Get an iterator over the words.
-    pub fn word_iter(&self) -> impl Iterator<Item = &'static str> + Clone + '_ {
-        self.0.word_iter()
-    }
 }
 
 impl NearSeedPhrase {
