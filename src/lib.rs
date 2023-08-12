@@ -26,3 +26,93 @@ pub fn derive_keypair(
 
     Ok(Keypair { secret, public })
 }
+
+#[cfg(test)]
+mod test {
+    use crate::{
+        derive_keypair, public, secret, FromSecretKeyStr, NearPath, NearSeedPhrase,
+        ToPublicKeyString, ToSecretKeyString,
+    };
+    use ed25519_dalek::Keypair;
+
+    const PHRASE: &str =
+        "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
+
+    const SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH: &str =
+        "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv";
+    const PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH: &str =
+        "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828";
+
+    const TEST_PASSWORD: &str = "test password";
+    const SECRET_WITH_TEST_PASSWORD_DEFAULT_PATH: &str =
+        "ed25519:42tDSPEUPH7LJnExPTaonmZZNAgUFpqbL8M4UiRGiTjWsKsmwtMoNm5vZduudVMRyFKocYz1BWRak7772bP87EsE";
+    const PUBLIC_WITH_TEST_PASSWORD_DEFAULT_PATH: &str =
+        "ed25519:Gm7KTMDLfBDtgrD4bUnuHMfMnYmXSQLCZ24KVdVY7RRe";
+
+    const SECRET_WITH_DEFAULT_PASSWORD_LEDGER_PATH: &str =
+        "ed25519:2KCJTPWTZ5XkrbmgGTcZKkG4dM7i5TAxc1terb7YquHVr3HEfsCXbfp4pMLBsYCBbS1hBBsy6Pq6mHQQgSQZufRz";
+    const PUBLIC_WITH_DEFAULT_PASSWORD_LEDGER_PATH: &str =
+        "ed25519:EGHPmFXinZsN5h3XU3s4gPuaQ9n6QyaQtSpVHij1wyeG";
+
+    #[test]
+    fn test_derive_keypair() {
+        let phrase = PHRASE.parse::<NearSeedPhrase>().unwrap();
+        let keypair = derive_keypair(&phrase, "", &NearPath::default()).unwrap();
+        assert_eq!(
+            keypair.to_secret_key_string(),
+            SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH
+        );
+        assert_eq!(
+            keypair.to_public_key_string(),
+            PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH
+        );
+    }
+
+    #[test]
+    fn test_from_secret_key_str() {
+        let keypair =
+            Keypair::from_secret_key_str(SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH).unwrap();
+        assert_eq!(
+            keypair.to_secret_key_string(),
+            SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH
+        );
+        assert_eq!(
+            keypair.to_public_key_string(),
+            PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH
+        );
+    }
+
+    #[test]
+    fn test_macros() {
+        let secret = secret!(PHRASE);
+        let public = public!(PHRASE);
+        assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
+        assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
+
+        let secret = secret!(PHRASE, "");
+        let public = public!(PHRASE, "");
+        assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
+        assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
+
+        let secret = secret!(PHRASE, "", NearPath::default());
+        let public = public!(PHRASE, "", NearPath::default());
+        assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
+        assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH);
+    }
+
+    #[test]
+    fn test_macros_with_password() {
+        let secret = secret!(PHRASE, TEST_PASSWORD, NearPath::default());
+        let public = public!(PHRASE, TEST_PASSWORD, NearPath::default());
+        assert_eq!(secret, SECRET_WITH_TEST_PASSWORD_DEFAULT_PATH);
+        assert_eq!(public, PUBLIC_WITH_TEST_PASSWORD_DEFAULT_PATH);
+    }
+
+    #[test]
+    fn test_macros_with_ledger() {
+        let secret = secret!(PHRASE, "", NearPath::ledger());
+        let public = public!(PHRASE, "", NearPath::ledger());
+        assert_eq!(secret, SECRET_WITH_DEFAULT_PASSWORD_LEDGER_PATH);
+        assert_eq!(public, PUBLIC_WITH_DEFAULT_PASSWORD_LEDGER_PATH);
+    }
+}
