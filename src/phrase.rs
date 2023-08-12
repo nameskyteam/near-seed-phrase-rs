@@ -1,24 +1,26 @@
 use crate::errors::AnyhowError;
 use crate::AnyhowResult;
 use bip39::Mnemonic;
+
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
-/// Word count of to be generated seed phrase
+/// Word count of to be generated seed phrase.
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum WordCount {
-    /// 12 words
+    /// 12 words.
     W12,
 
-    /// 15 words
+    /// 15 words.
     W15,
 
-    /// 18 words
+    /// 18 words.
     W18,
 
-    /// 21 words
+    /// 21 words.
     W21,
 
-    /// 24 words
+    /// 24 words.
     W24,
 }
 
