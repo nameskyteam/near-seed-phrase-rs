@@ -4,49 +4,51 @@ use slip10::BIP32Path;
 use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
 
-const NEAR_DEFAULT_PATH: &str = "m/44'/397'/0'";
-const NEAR_LEDGER_PATH: &str = "m/44'/397'/0'/0'/1'";
+const NEAR_DERIVATION_PATH_DEFAULT: &str = "m/44'/397'/0'";
+const NEAR_DERIVATION_PATH_LEDGER: &str = "m/44'/397'/0'/0'/1'";
 
+/// NEAR BIP32 derivation path.
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct NearPath(pub BIP32Path);
+pub struct NearDerivationPath(pub BIP32Path);
 
-impl NearPath {
-    /// NEAR Ledger derivation path: `m/44'/397'/0'/0'/1'`.
+impl NearDerivationPath {
+    /// NEAR derivation path for Ledger.
     pub fn ledger() -> Self {
-        Self(NEAR_LEDGER_PATH.parse().unwrap())
+        Self(NEAR_DERIVATION_PATH_LEDGER.parse().unwrap())
     }
+}
 
-    /// Used in macro [`keypair!`].
+impl NearDerivationPath {
     #[doc(hidden)]
     pub fn parse(&self) -> AnyhowResult<Self> {
         Ok(self.clone())
     }
 }
 
-impl Default for NearPath {
-    /// NEAR default derivation path: `m/44'/397'/0'`.
+impl Default for NearDerivationPath {
+    /// NEAR derivation path by default.
     fn default() -> Self {
-        Self(NEAR_DEFAULT_PATH.parse().unwrap())
+        Self(NEAR_DERIVATION_PATH_DEFAULT.parse().unwrap())
     }
 }
 
-impl From<BIP32Path> for NearPath {
+impl From<BIP32Path> for NearDerivationPath {
     fn from(path: BIP32Path) -> Self {
         Self(path)
     }
 }
 
-impl FromStr for NearPath {
+impl FromStr for NearDerivationPath {
     type Err = AnyhowError;
 
     fn from_str(path: &str) -> Result<Self, Self::Err> {
-        path.parse()
-            .map(Self)
-            .map_err(IntoAnyhowError::into_anyhow_error)
+        Ok(Self(
+            path.parse().map_err(IntoAnyhowError::into_anyhow_error)?,
+        ))
     }
 }
 
-impl TryFrom<&str> for NearPath {
+impl TryFrom<&str> for NearDerivationPath {
     type Error = AnyhowError;
 
     fn try_from(path: &str) -> Result<Self, Self::Error> {
@@ -54,7 +56,7 @@ impl TryFrom<&str> for NearPath {
     }
 }
 
-impl TryFrom<String> for NearPath {
+impl TryFrom<String> for NearDerivationPath {
     type Error = AnyhowError;
 
     fn try_from(path: String) -> Result<Self, Self::Error> {
@@ -62,7 +64,7 @@ impl TryFrom<String> for NearPath {
     }
 }
 
-impl Display for NearPath {
+impl Display for NearDerivationPath {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         Display::fmt(&self.0, f)
     }
