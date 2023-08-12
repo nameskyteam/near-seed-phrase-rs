@@ -20,10 +20,8 @@ pub fn derive_keypair(
 ) -> AnyhowResult<Keypair> {
     let key = derive_key_from_path(&phrase.0.to_seed(password), Curve::Ed25519, &path.0)
         .map_err(IntoAnyhowError::into_anyhow_error)?;
-
     let secret = SecretKey::from_bytes(&key.key)?;
     let public = PublicKey::from(&secret);
-
     Ok(Keypair { secret, public })
 }
 

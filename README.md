@@ -25,7 +25,6 @@ fn example() {
     let phrase = "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
     
     let StringKeypair { secret, public } = convert!(phrase);
-    
     assert_eq!(secret, "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
     assert_eq!(public, "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
 }
@@ -38,7 +37,6 @@ fn example() {
     let password = "password";
     
     let StringKeypair { secret, public } = convert!(phrase, password);
-    
     assert_eq!(secret, "ed25519:2PzwsYGPX3XWwz67qwj4wqq4VWF7M4ENFyhbhDQsMKLUvzTKCQQx1srnmzRDBsCqpsTwdCFiQN2ZoYCngTxdRrri");
     assert_eq!(public, "ed25519:FoccWVCwm6dn9e7i1JHXskvac52iwUngHpLZMbdMggMk");
 }
@@ -51,7 +49,6 @@ fn example() {
     let path = "m/44'/397'/1'";
     
     let StringKeypair { secret, public } = convert!(phrase, "", path);
-    
     assert_eq!(secret, "ed25519:2Q6EAt5ikTSVT2HvAB6fb5XLFukrahVXFdSzdYt8sVxXRasDktuAx2hTY5yBiPju4wdqbevnSgKxfayKvUBShsRv");
     assert_eq!(public, "ed25519:5yszd4dR4jgNhVpSo9oYT2RXLLWdEqqJ5y1WjLiwodTS");
 }
