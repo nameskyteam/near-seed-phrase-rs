@@ -6,6 +6,7 @@
 ///
 /// let phrase = "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
 /// let StringKeypair { secret, public } = convert!(phrase);
+///
 /// assert_eq!(secret, "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
 /// assert_eq!(public, "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
 /// ```
@@ -13,21 +14,15 @@
 macro_rules! convert {
     ($phrase:expr) => {{
         let keypair = $crate::__keypair!($phrase, "", $crate::NearDerivationPath::default());
-        let secret = $crate::ToSecretKeyString::to_secret_key_string(&keypair);
-        let public = $crate::ToPublicKeyString::to_public_key_string(&keypair);
-        $crate::StringKeypair { secret, public }
+        $crate::ToStringKeypair::to_string_keypair(&keypair)
     }};
     ($phrase:expr, $password:expr) => {{
         let keypair = $crate::__keypair!($phrase, $password, $crate::NearDerivationPath::default());
-        let secret = $crate::ToSecretKeyString::to_secret_key_string(&keypair);
-        let public = $crate::ToPublicKeyString::to_public_key_string(&keypair);
-        $crate::StringKeypair { secret, public }
+        $crate::ToStringKeypair::to_string_keypair(&keypair)
     }};
     ($phrase:expr, $password:expr, $path:expr) => {{
         let keypair = $crate::__keypair!($phrase, $password, $path);
-        let secret = $crate::ToSecretKeyString::to_secret_key_string(&keypair);
-        let public = $crate::ToPublicKeyString::to_public_key_string(&keypair);
-        $crate::StringKeypair { secret, public }
+        $crate::ToStringKeypair::to_string_keypair(&keypair)
     }};
 }
 
