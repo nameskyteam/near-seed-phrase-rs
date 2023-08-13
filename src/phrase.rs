@@ -1,7 +1,5 @@
-use crate::error::AnyhowError;
-use crate::AnyhowResult;
+use crate::error::Error;
 use bip39::Mnemonic;
-
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
@@ -13,7 +11,7 @@ pub struct NearSeedPhrase(pub Mnemonic);
 
 impl NearSeedPhrase {
     /// Generate a new seed phrase.
-    pub fn generate(word_count: usize) -> AnyhowResult<Self> {
+    pub fn generate(word_count: usize) -> Result<Self, Error> {
         Ok(Self(Mnemonic::generate(word_count)?))
     }
 }
@@ -21,7 +19,7 @@ impl NearSeedPhrase {
 impl NearSeedPhrase {
     /// Used in private macro [`__keypair!`](crate::__keypair).
     #[doc(hidden)]
-    pub fn parse<T>(&self) -> AnyhowResult<&Self> {
+    pub fn parse<T>(&self) -> Result<&Self, Error> {
         Ok(self)
     }
 }
@@ -33,7 +31,7 @@ impl From<Mnemonic> for NearSeedPhrase {
 }
 
 impl FromStr for NearSeedPhrase {
-    type Err = AnyhowError;
+    type Err = Error;
 
     fn from_str(phrase: &str) -> Result<Self, Self::Err> {
         Ok(Self(phrase.parse()?))
@@ -41,7 +39,7 @@ impl FromStr for NearSeedPhrase {
 }
 
 impl TryFrom<String> for NearSeedPhrase {
-    type Error = AnyhowError;
+    type Error = Error;
 
     fn try_from(phrase: String) -> Result<Self, Self::Error> {
         phrase.parse()

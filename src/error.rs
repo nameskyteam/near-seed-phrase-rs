@@ -1,18 +1,29 @@
-use std::fmt::{Debug, Display};
+use std::fmt::Debug;
 
-pub type AnyhowResult<T> = anyhow::Result<T>;
+#[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
+pub enum Error {
+    #[error("{0}")]
+    Slip10(slip10::Error),
 
-pub type AnyhowError = anyhow::Error;
+    #[error("{0}")]
+    Bip39(#[from] bip39::Error),
 
-pub trait IntoAnyhowError: Sized {
-    fn into_anyhow_error(self) -> AnyhowError;
+    #[error("{0}")]
+    Signature(#[from] ed25519_dalek::SignatureError),
+
+    #[error("{0}")]
+    Base58Decode(#[from] bs58::decode::Error),
+
+    #[error("invalid secret key length")]
+    InvalidSecretKeyLen,
+
+    #[error("public key doesn't match secret key")]
+    PublicKeyNotMatch,
 }
 
-impl<T: Display + Debug + Send + Sync + 'static> IntoAnyhowError for T {
-    /// Convert to [`anyhow::Error`].
-    fn into_anyhow_error(self) -> AnyhowError {
-        anyhow::anyhow!(self)
+impl From<slip10::Error> for Error {
+    fn from(e: slip10::Error) -> Self {
+        Self::Slip10(e)
     }
 }
-
-// impl<T: std::error::Error> !IntoAnyhowError for T {}

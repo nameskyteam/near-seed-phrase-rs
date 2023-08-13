@@ -4,7 +4,7 @@ pub mod macros;
 mod path;
 mod phrase;
 
-use crate::error::{AnyhowError, AnyhowResult, IntoAnyhowError};
+use crate::error::Error;
 use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 use slip10::{derive_key_from_path, Curve};
 
@@ -17,9 +17,8 @@ pub fn derive_keypair(
     phrase: &NearSeedPhrase,
     password: &str,
     path: &NearDerivationPath,
-) -> AnyhowResult<Keypair> {
-    let key = derive_key_from_path(&phrase.0.to_seed(password), Curve::Ed25519, &path.0)
-        .map_err(IntoAnyhowError::into_anyhow_error)?;
+) -> Result<Keypair, Error> {
+    let key = derive_key_from_path(&phrase.0.to_seed(password), Curve::Ed25519, &path.0)?;
     let secret = SecretKey::from_bytes(&key.key)?;
     let public = PublicKey::from(&secret);
     Ok(Keypair { secret, public })
