@@ -1,4 +1,4 @@
-use crate::{AnyhowError, AnyhowResult};
+use crate::error::Error;
 use ed25519_dalek::{Keypair, PublicKey, SecretKey, KEYPAIR_LENGTH, SECRET_KEY_LENGTH};
 
 const ED25519_PREFIX: &str = "ed25519:";
@@ -50,7 +50,7 @@ pub trait FromEncodedKey: Sized {
 }
 
 impl FromEncodedKey for SecretKey {
-    type Error = AnyhowError;
+    type Error = Error;
 
     /// Decode secret key string to [`SecretKey`](ed25519_dalek::SecretKey).
     /// Note that the secret key string should contain both secret key and public key,
@@ -58,20 +58,20 @@ impl FromEncodedKey for SecretKey {
     fn from_encoded_key(secret: &str) -> Result<Self, Self::Error> {
         let bytes = decode_key(secret)?;
         if bytes.len() != KEYPAIR_LENGTH {
-            anyhow::bail!("invalid secret key length");
+            return Err(Error::InvalidSecretKeyLen);
         }
         let secret = SecretKey::from_bytes(&bytes[..SECRET_KEY_LENGTH])?;
         let public = PublicKey::from_bytes(&bytes[SECRET_KEY_LENGTH..])?;
         let public_from_secret = PublicKey::from(&secret);
         if public != public_from_secret {
-            anyhow::bail!("public key doesn't match secret key");
+            return Err(Error::PublicKeyNotMatch);
         }
         Ok(secret)
     }
 }
 
 impl FromEncodedKey for PublicKey {
-    type Error = AnyhowError;
+    type Error = Error;
 
     /// Decode public key string to [`PublicKey`](ed25519_dalek::PublicKey).
     fn from_encoded_key(public: &str) -> Result<Self, Self::Error> {
@@ -80,7 +80,7 @@ impl FromEncodedKey for PublicKey {
     }
 }
 
-fn decode_key(key: &str) -> AnyhowResult<Vec<u8>> {
+fn decode_key(key: &str) -> Result<Vec<u8>, Error> {
     let key = key.strip_prefix(ED25519_PREFIX).unwrap_or(key);
     Ok(bs58::decode(key).into_vec()?)
 }

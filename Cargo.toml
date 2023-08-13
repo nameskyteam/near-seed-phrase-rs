@@ -1,6 +1,6 @@
 [package]
 name = "near-seed-phrase"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "A lib to handle NEAR seed phrase"
 license = "MIT"
@@ -9,7 +9,7 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.72"
+thiserror = "1.0.44"
 bip39 = { version = "2.0.0", features = [ "rand" ] }
 slip10 = "0.4.3"
 ed25519-dalek = { version = "1.0.1", features = [ "rand" ] }

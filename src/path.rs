@@ -1,5 +1,4 @@
-use crate::error::AnyhowError;
-use crate::{AnyhowResult, IntoAnyhowError};
+use crate::error::Error;
 use slip10::BIP32Path;
 use std::fmt::{Debug, Display, Formatter};
 use std::str::FromStr;
@@ -21,7 +20,7 @@ impl NearDerivationPath {
 impl NearDerivationPath {
     /// Used in private macro [`__keypair!`](crate::__keypair).
     #[doc(hidden)]
-    pub fn parse<T>(&self) -> AnyhowResult<&Self> {
+    pub fn parse<T>(&self) -> Result<&Self, Error> {
         Ok(self)
     }
 }
@@ -40,17 +39,15 @@ impl From<BIP32Path> for NearDerivationPath {
 }
 
 impl FromStr for NearDerivationPath {
-    type Err = AnyhowError;
+    type Err = Error;
 
     fn from_str(path: &str) -> Result<Self, Self::Err> {
-        Ok(Self(
-            path.parse().map_err(IntoAnyhowError::into_anyhow_error)?,
-        ))
+        Ok(path.parse().map(Self)?)
     }
 }
 
 impl TryFrom<String> for NearDerivationPath {
-    type Error = AnyhowError;
+    type Error = Error;
 
     fn try_from(path: String) -> Result<Self, Self::Error> {
         path.parse()
