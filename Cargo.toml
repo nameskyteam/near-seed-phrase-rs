@@ -9,5 +9,5 @@ edition = "2021"
 anyhow = "1.0.72"
 bip39 = { version = "2.0.0", features = [ "rand" ] }
 slip10 = "0.4.3"
-ed25519-dalek = "1.0.1"
+ed25519-dalek = { version = "1.0.1", features = [ "rand" ] }
 bs58 = "0.5.0"

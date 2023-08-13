@@ -1,28 +1,29 @@
-/// Parse ed25519 secret key string from given seed phrase, password and derivation path.
+/// Derive [`StringKeypair`](crate::StringKeypair) from given seed phrase, password and derivation path.
 /// Invalid seed phrase or derivation path will cause panic.
+///
 /// # Example
 /// ```
-/// use near_seed_phrase::{convert, StringKeypair};
+/// use near_seed_phrase::keypair;
 ///
 /// let phrase = "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
-/// let StringKeypair { secret, public } = convert!(phrase);
+/// let keypair = keypair!(phrase);
 ///
-/// assert_eq!(secret, "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
-/// assert_eq!(public, "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
+/// assert_eq!(keypair.secret, "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
+/// assert_eq!(keypair.public, "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
 /// ```
 #[macro_export]
-macro_rules! convert {
+macro_rules! keypair {
     ($phrase:expr) => {{
         let keypair = $crate::__keypair!($phrase, "", $crate::NearDerivationPath::default());
-        $crate::ToStringKeypair::to_string_keypair(&keypair)
+        $crate::keypair_to_string_keypair(&keypair)
     }};
     ($phrase:expr, $password:expr) => {{
         let keypair = $crate::__keypair!($phrase, $password, $crate::NearDerivationPath::default());
-        $crate::ToStringKeypair::to_string_keypair(&keypair)
+        $crate::keypair_to_string_keypair(&keypair)
     }};
     ($phrase:expr, $password:expr, $path:expr) => {{
         let keypair = $crate::__keypair!($phrase, $password, $path);
-        $crate::ToStringKeypair::to_string_keypair(&keypair)
+        $crate::keypair_to_string_keypair(&keypair)
     }};
 }
 

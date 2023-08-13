@@ -49,14 +49,6 @@ impl FromStr for NearDerivationPath {
     }
 }
 
-impl TryFrom<&str> for NearDerivationPath {
-    type Error = AnyhowError;
-
-    fn try_from(path: &str) -> Result<Self, Self::Error> {
-        path.parse()
-    }
-}
-
 impl TryFrom<String> for NearDerivationPath {
     type Error = AnyhowError;
 

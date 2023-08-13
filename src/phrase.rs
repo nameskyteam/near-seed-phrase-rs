@@ -5,45 +5,16 @@ use bip39::Mnemonic;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
-/// Word count of to be generated seed phrase.
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub enum WordCount {
-    /// 12 words.
-    W12,
-
-    /// 15 words.
-    W15,
-
-    /// 18 words.
-    W18,
-
-    /// 21 words.
-    W21,
-
-    /// 24 words.
-    W24,
-}
-
-impl WordCount {
-    pub fn unwrap(&self) -> usize {
-        match self {
-            WordCount::W12 => 12,
-            WordCount::W15 => 15,
-            WordCount::W18 => 18,
-            WordCount::W21 => 21,
-            WordCount::W24 => 24,
-        }
-    }
-}
-
 /// NEAR BIP39 seed phrase.
+///
+/// Supported number of words are 12, 15, 18, 21, and 24.
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct NearSeedPhrase(pub Mnemonic);
 
 impl NearSeedPhrase {
     /// Generate a new seed phrase.
-    pub fn generate(word_count: WordCount) -> AnyhowResult<Self> {
-        Ok(Self(Mnemonic::generate(word_count.unwrap())?))
+    pub fn generate(word_count: usize) -> AnyhowResult<Self> {
+        Ok(Self(Mnemonic::generate(word_count)?))
     }
 }
 
@@ -66,14 +37,6 @@ impl FromStr for NearSeedPhrase {
 
     fn from_str(phrase: &str) -> Result<Self, Self::Err> {
         Ok(Self(phrase.parse()?))
-    }
-}
-
-impl TryFrom<&str> for NearSeedPhrase {
-    type Error = AnyhowError;
-
-    fn try_from(phrase: &str) -> Result<Self, Self::Error> {
-        phrase.parse()
     }
 }
 
