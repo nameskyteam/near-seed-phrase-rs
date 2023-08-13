@@ -3,17 +3,17 @@ use ed25519_dalek::{Keypair, PublicKey, SecretKey, KEYPAIR_LENGTH, SECRET_KEY_LE
 
 const ED25519_PREFIX: &str = "ed25519:";
 
-/// Keypair that saving secret key and public key as string.
+/// Keypair that saving secret key and public key as encoded string.
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct StringKeypair {
+pub struct EncodedKeypair {
     pub secret: String,
     pub public: String,
 }
 
-pub fn keypair_to_string_keypair(keypair: &Keypair) -> StringKeypair {
+pub fn encode_keypair(keypair: &Keypair) -> EncodedKeypair {
     let secret = keypair.secret.to_encoded_key();
     let public = keypair.public.to_encoded_key();
-    StringKeypair { secret, public }
+    EncodedKeypair { secret, public }
 }
 
 pub trait ToEncodedKey {

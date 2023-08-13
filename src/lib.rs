@@ -8,7 +8,7 @@ use crate::errors::{AnyhowError, AnyhowResult, IntoAnyhowError};
 use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 use slip10::{derive_key_from_path, Curve};
 
-pub use convert::{keypair_to_string_keypair, FromEncodedKey, StringKeypair, ToEncodedKey};
+pub use convert::{encode_keypair, EncodedKeypair, FromEncodedKey, ToEncodedKey};
 pub use path::NearDerivationPath;
 pub use phrase::NearSeedPhrase;
 

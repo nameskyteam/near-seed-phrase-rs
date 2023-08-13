@@ -1,4 +1,4 @@
-/// Derive [`StringKeypair`](crate::StringKeypair) from given seed phrase, password and derivation path.
+/// Derive [`EncodedKeypair`](crate::EncodedKeypair) from given seed phrase, password and derivation path.
 /// Invalid seed phrase or derivation path will cause panic.
 ///
 /// # Example
@@ -15,15 +15,15 @@
 macro_rules! keypair {
     ($phrase:expr) => {{
         let keypair = $crate::__keypair!($phrase, "", $crate::NearDerivationPath::default());
-        $crate::keypair_to_string_keypair(&keypair)
+        $crate::encode_keypair(&keypair)
     }};
     ($phrase:expr, $password:expr) => {{
         let keypair = $crate::__keypair!($phrase, $password, $crate::NearDerivationPath::default());
-        $crate::keypair_to_string_keypair(&keypair)
+        $crate::encode_keypair(&keypair)
     }};
     ($phrase:expr, $password:expr, $path:expr) => {{
         let keypair = $crate::__keypair!($phrase, $password, $path);
-        $crate::keypair_to_string_keypair(&keypair)
+        $crate::encode_keypair(&keypair)
     }};
 }
 
