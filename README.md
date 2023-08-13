@@ -1,6 +1,12 @@
 # NEAR Seed Phrase
 Similar to [near-seed-phrase](https://github.com/near/near-seed-phrase) but in Rust version
 
+## Install
+```toml
+[dependencies]
+near-seed-phrase = "*"
+```
+
 ## Usage
 
 ### Basic
