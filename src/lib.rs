@@ -66,15 +66,17 @@ mod test {
     }
 
     #[test]
-    fn test_from_secret_key_string() {
+    fn test_from_encoded_secret_key() {
         let secret =
             SecretKey::from_encoded_key(SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH).unwrap();
-        let public = PublicKey::from(&secret);
 
         assert_eq!(
             secret.to_encoded_key(),
             SECRET_WITH_DEFAULT_PASSWORD_DEFAULT_PATH
         );
+
+        let public = PublicKey::from(&secret);
+
         assert_eq!(
             public.to_encoded_key(),
             PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH
@@ -82,7 +84,7 @@ mod test {
     }
 
     #[test]
-    fn test_from_public_key_string() {
+    fn test_from_encoded_public_key() {
         let public =
             PublicKey::from_encoded_key(PUBLIC_WITH_DEFAULT_PASSWORD_DEFAULT_PATH).unwrap();
 
