@@ -1,10 +1,10 @@
 mod encoding;
-pub mod errors;
+pub mod error;
 pub mod macros;
 mod path;
 mod phrase;
 
-use crate::errors::{AnyhowError, AnyhowResult, IntoAnyhowError};
+use crate::error::{AnyhowError, AnyhowResult, IntoAnyhowError};
 use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 use slip10::{derive_key_from_path, Curve};
 

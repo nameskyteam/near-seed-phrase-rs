@@ -1,4 +1,4 @@
-use crate::errors::AnyhowError;
+use crate::error::AnyhowError;
 use crate::{AnyhowResult, IntoAnyhowError};
 use slip10::BIP32Path;
 use std::fmt::{Debug, Display, Formatter};

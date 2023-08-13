@@ -1,4 +1,4 @@
-use crate::errors::AnyhowError;
+use crate::error::AnyhowError;
 use crate::AnyhowResult;
 use bip39::Mnemonic;
 
