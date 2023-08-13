@@ -1,4 +1,4 @@
-mod convert;
+mod encoding;
 pub mod errors;
 pub mod macros;
 mod path;
@@ -8,7 +8,7 @@ use crate::errors::{AnyhowError, AnyhowResult, IntoAnyhowError};
 use ed25519_dalek::{Keypair, PublicKey, SecretKey};
 use slip10::{derive_key_from_path, Curve};
 
-pub use convert::{encode_keypair, EncodedKeypair, FromEncodedKey, ToEncodedKey};
+pub use encoding::{encode_keypair, EncodedKeypair, FromEncodedKey, ToEncodedKey};
 pub use path::NearDerivationPath;
 pub use phrase::NearSeedPhrase;
 
@@ -27,7 +27,7 @@ pub fn derive_keypair(
 
 #[cfg(test)]
 mod test {
-    use crate::convert::{FromEncodedKey, ToEncodedKey};
+    use crate::encoding::{FromEncodedKey, ToEncodedKey};
     use crate::{derive_keypair, keypair, NearDerivationPath, NearSeedPhrase};
     use ed25519_dalek::{PublicKey, SecretKey};
 
