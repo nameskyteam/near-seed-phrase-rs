@@ -1,6 +1,4 @@
-use std::fmt::Debug;
-
-#[derive(Debug, thiserror::Error)]
+#[derive(std::fmt::Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum Error {
     #[error("{0}")]
@@ -10,16 +8,13 @@ pub enum Error {
     Bip39Error(#[from] bip39::Error),
 
     #[error("{0}")]
-    SignatureError(#[from] ed25519_dalek::SignatureError),
+    Ed25519SignatureError(#[from] ed25519_dalek::SignatureError),
 
     #[error("{0}")]
     Base58DecodeError(#[from] bs58::decode::Error),
 
-    #[error("invalid secret key length")]
-    InvalidSecretKeyLen,
-
-    #[error("public key doesn't match secret key")]
-    PublicKeyNotMatch,
+    #[error("invalid byte length")]
+    InvalidByteLength,
 }
 
 impl From<slip10::Error> for Error {
