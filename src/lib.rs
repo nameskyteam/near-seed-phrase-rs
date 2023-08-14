@@ -13,6 +13,8 @@ pub use phrase::NearSeedPhrase;
 pub use public::NearPublicKey;
 pub use secret::NearSecretKey;
 
+pub use ed25519_dalek::{Signature, SignatureError, Signer, Verifier};
+
 /// Derive [`NearSecretKey`](crate::secret::NearSecretKey) from given seed phrase, password and derivation path.
 pub fn derive_key(
     phrase: &NearSeedPhrase,

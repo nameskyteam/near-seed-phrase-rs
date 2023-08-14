@@ -1,6 +1,6 @@
 use crate::error::Error;
 use crate::{NearSecretKey, ToEncodedKey};
-use ed25519_dalek::VerifyingKey;
+use ed25519_dalek::{Signature, SignatureError, Verifier, VerifyingKey};
 use std::fmt::{Display, Formatter};
 
 /// NEAR ed25519 public key
@@ -15,6 +15,12 @@ impl NearPublicKey {
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength)?;
         Ok(VerifyingKey::from_bytes(&bytes).map(Self)?)
+    }
+}
+
+impl Verifier<Signature> for NearPublicKey {
+    fn verify(&self, msg: &[u8], signature: &Signature) -> Result<(), SignatureError> {
+        self.0.verify(msg, signature)
     }
 }
 
