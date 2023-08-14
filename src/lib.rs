@@ -34,39 +34,45 @@ mod test {
     const PHRASE: &str =
         "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
 
-    const SECRET_KEY: &str =
+    const ENCODED_SECRET_KEY: &str =
         "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv";
-    const PUBLIC_KEY: &str = "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828";
+    const ENCODED_PUBLIC_KEY: &str = "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828";
 
     #[test]
-    fn test_derive_keypair() {
+    fn test_derive_key() {
         let phrase = PHRASE.parse::<NearSeedPhrase>().unwrap();
         let secret_key = derive_key(&phrase, "", &NearDerivationPath::default()).unwrap();
 
-        assert_eq!(secret_key.to_encoded_key(), SECRET_KEY);
-        assert_eq!(secret_key.to_public_key().to_encoded_key(), PUBLIC_KEY);
+        assert_eq!(secret_key.to_encoded_key(), ENCODED_SECRET_KEY);
+        assert_eq!(
+            secret_key.to_public_key().to_encoded_key(),
+            ENCODED_PUBLIC_KEY
+        );
     }
 
     #[test]
-    fn test_from_encoded_secret_key() {
-        let secret_key = NearSecretKey::from_encoded_key(SECRET_KEY).unwrap();
+    fn test_from_encoded_key() {
+        let secret_key = NearSecretKey::from_encoded_key(ENCODED_SECRET_KEY).unwrap();
 
-        assert_eq!(secret_key.to_encoded_key(), SECRET_KEY);
-        assert_eq!(secret_key.to_public_key().to_encoded_key(), PUBLIC_KEY);
-    }
+        assert_eq!(secret_key.to_encoded_key(), ENCODED_SECRET_KEY);
+        assert_eq!(
+            secret_key.to_public_key().to_encoded_key(),
+            ENCODED_PUBLIC_KEY
+        );
 
-    #[test]
-    fn test_from_encoded_public_key() {
-        let public_key = NearPublicKey::from_encoded_key(PUBLIC_KEY).unwrap();
+        let public_key = NearPublicKey::from_encoded_key(ENCODED_PUBLIC_KEY).unwrap();
 
-        assert_eq!(public_key.to_encoded_key(), PUBLIC_KEY);
+        assert_eq!(public_key.to_encoded_key(), ENCODED_PUBLIC_KEY);
     }
 
     #[test]
     fn test_marco() {
         let secret_key = derive_key!(PHRASE, "", NearDerivationPath::default());
 
-        assert_eq!(secret_key.to_encoded_key(), SECRET_KEY);
-        assert_eq!(secret_key.to_public_key().to_encoded_key(), PUBLIC_KEY);
+        assert_eq!(secret_key.to_encoded_key(), ENCODED_SECRET_KEY);
+        assert_eq!(
+            secret_key.to_public_key().to_encoded_key(),
+            ENCODED_PUBLIC_KEY
+        );
     }
 }

@@ -25,15 +25,15 @@ impl ToEncodedKey for NearPublicKey {
 pub trait FromEncodedKey: Sized {
     type Error;
 
-    fn from_encoded_key(key: &str) -> Result<Self, Self::Error>;
+    fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error>;
 }
 
 impl FromEncodedKey for NearSecretKey {
     type Error = Error;
 
     /// Decode string to [`NearSecretKey`](crate::secret::NearSecretKey).
-    fn from_encoded_key(secret_key: &str) -> Result<Self, Self::Error> {
-        let bytes = decode_key(secret_key)?;
+    fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error> {
+        let bytes = decode_key(encoded_key)?;
         NearSecretKey::from_keypair_bytes(&bytes)
     }
 }
@@ -42,8 +42,8 @@ impl FromEncodedKey for NearPublicKey {
     type Error = Error;
 
     /// Decode string to [`NearPublicKey`](crate::secret::NearPublicKey).
-    fn from_encoded_key(public_key: &str) -> Result<Self, Self::Error> {
-        let bytes = decode_key(public_key)?;
+    fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error> {
+        let bytes = decode_key(encoded_key)?;
         NearPublicKey::from_bytes(&bytes)
     }
 }
