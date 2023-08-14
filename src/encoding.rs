@@ -1,83 +1,55 @@
 use crate::error::Error;
-use ed25519_dalek::{Keypair, PublicKey, SecretKey, KEYPAIR_LENGTH, SECRET_KEY_LENGTH};
+use crate::public::NearPublicKey;
+use crate::secret::NearSecretKey;
 
 const ED25519_PREFIX: &str = "ed25519:";
-
-/// Keypair that saving secret key and public key as encoded string.
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct EncodedKeypair {
-    pub secret: String,
-    pub public: String,
-}
-
-pub fn encode_keypair(keypair: &Keypair) -> EncodedKeypair {
-    let secret = keypair.secret.to_encoded_key();
-    let public = keypair.public.to_encoded_key();
-    EncodedKeypair { secret, public }
-}
 
 pub trait ToEncodedKey {
     fn to_encoded_key(&self) -> String;
 }
 
-impl ToEncodedKey for SecretKey {
-    /// Encode [`SecretKey`](ed25519_dalek::SecretKey) to secret key string.
-    /// Note that the secret key string contains both secret key and public key.
+impl ToEncodedKey for NearSecretKey {
+    /// Encode [`NearSecretKey`](crate::secret::NearSecretKey) to string.
     fn to_encoded_key(&self) -> String {
-        let public = PublicKey::from(self);
-        let mut bytes = [0; KEYPAIR_LENGTH];
-        bytes[..SECRET_KEY_LENGTH].copy_from_slice(self.as_bytes());
-        bytes[SECRET_KEY_LENGTH..].copy_from_slice(public.as_bytes());
-        encode_key(&bytes)
+        encode_key(&self.to_keypair_bytes())
     }
 }
 
-impl ToEncodedKey for PublicKey {
-    /// Encode [`PublicKey`](ed25519_dalek::PublicKey) to public key string.
+impl ToEncodedKey for NearPublicKey {
+    /// Encode [`NearPublicKey`](crate::secret::NearPublicKey) to string.
     fn to_encoded_key(&self) -> String {
-        encode_key(self.as_bytes())
+        encode_key(&self.to_bytes())
     }
-}
-
-fn encode_key(key: &[u8]) -> String {
-    format!("{}{}", ED25519_PREFIX, bs58::encode(key).into_string())
 }
 
 pub trait FromEncodedKey: Sized {
     type Error;
 
-    fn from_encoded_key(secret: &str) -> Result<Self, Self::Error>;
+    fn from_encoded_key(key: &str) -> Result<Self, Self::Error>;
 }
 
-impl FromEncodedKey for SecretKey {
+impl FromEncodedKey for NearSecretKey {
     type Error = Error;
 
-    /// Decode secret key string to [`SecretKey`](ed25519_dalek::SecretKey).
-    /// Note that the secret key string should contain both secret key and public key,
-    /// public key should match secret key.
-    fn from_encoded_key(secret: &str) -> Result<Self, Self::Error> {
-        let bytes = decode_key(secret)?;
-        if bytes.len() != KEYPAIR_LENGTH {
-            return Err(Error::InvalidSecretKeyLen);
-        }
-        let secret = SecretKey::from_bytes(&bytes[..SECRET_KEY_LENGTH])?;
-        let public = PublicKey::from_bytes(&bytes[SECRET_KEY_LENGTH..])?;
-        let public_from_secret = PublicKey::from(&secret);
-        if public != public_from_secret {
-            return Err(Error::PublicKeyNotMatch);
-        }
-        Ok(secret)
+    /// Decode string to [`NearSecretKey`](crate::secret::NearSecretKey).
+    fn from_encoded_key(secret_key: &str) -> Result<Self, Self::Error> {
+        let bytes = decode_key(secret_key)?;
+        NearSecretKey::from_keypair_bytes(&bytes)
     }
 }
 
-impl FromEncodedKey for PublicKey {
+impl FromEncodedKey for NearPublicKey {
     type Error = Error;
 
-    /// Decode public key string to [`PublicKey`](ed25519_dalek::PublicKey).
-    fn from_encoded_key(public: &str) -> Result<Self, Self::Error> {
-        let bytes = decode_key(public)?;
-        Ok(PublicKey::from_bytes(&bytes)?)
+    /// Decode string to [`NearPublicKey`](crate::secret::NearPublicKey).
+    fn from_encoded_key(public_key: &str) -> Result<Self, Self::Error> {
+        let bytes = decode_key(public_key)?;
+        NearPublicKey::from_bytes(&bytes)
     }
+}
+
+fn encode_key(key: &[u8]) -> String {
+    format!("{}{}", ED25519_PREFIX, bs58::encode(key).into_string())
 }
 
 fn decode_key(key: &str) -> Result<Vec<u8>, Error> {

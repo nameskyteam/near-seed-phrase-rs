@@ -7,26 +7,27 @@ use std::str::FromStr;
 ///
 /// Supported number of words are 12, 15, 18, 21, and 24.
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct NearSeedPhrase(pub Mnemonic);
+pub struct NearSeedPhrase(pub(crate) Mnemonic);
 
 impl NearSeedPhrase {
     /// Generate a new seed phrase.
     pub fn generate(word_count: usize) -> Result<Self, Error> {
-        Ok(Self(Mnemonic::generate(word_count)?))
+        Ok(Mnemonic::generate(word_count).map(Self)?)
+    }
+
+    pub fn word_count(&self) -> usize {
+        self.0.word_count()
+    }
+
+    pub fn to_word_list(&self) -> Vec<String> {
+        self.0.word_iter().map(|word| word.to_string()).collect()
     }
 }
 
 impl NearSeedPhrase {
-    /// Used in private macro [`__keypair!`](crate::__keypair).
     #[doc(hidden)]
     pub fn parse<T>(&self) -> Result<&Self, Error> {
         Ok(self)
-    }
-}
-
-impl From<Mnemonic> for NearSeedPhrase {
-    fn from(phrase: Mnemonic) -> Self {
-        Self(phrase)
     }
 }
 
@@ -34,7 +35,7 @@ impl FromStr for NearSeedPhrase {
     type Err = Error;
 
     fn from_str(phrase: &str) -> Result<Self, Self::Err> {
-        Ok(Self(phrase.parse()?))
+        Ok(phrase.parse().map(Self)?)
     }
 }
 
@@ -42,7 +43,7 @@ impl TryFrom<String> for NearSeedPhrase {
     type Error = Error;
 
     fn try_from(phrase: String) -> Result<Self, Self::Error> {
-        phrase.parse()
+        Ok(phrase.parse().map(Self)?)
     }
 }
 
