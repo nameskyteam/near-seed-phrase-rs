@@ -8,10 +8,12 @@ use std::fmt::{Display, Formatter};
 pub struct NearPublicKey(pub(crate) VerifyingKey);
 
 impl NearPublicKey {
+    /// To raw public key
     pub fn to_bytes(&self) -> [u8; 32] {
         self.0.to_bytes()
     }
 
+    /// From raw public key
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength)?;
         Ok(VerifyingKey::from_bytes(&bytes).map(Self)?)

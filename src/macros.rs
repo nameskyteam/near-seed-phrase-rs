@@ -1,4 +1,4 @@
-/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) from given seed phrase, password and derivation path.
+/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) with given seed phrase, password and derivation path.
 /// Invalid seed phrase or derivation path will cause panic.
 ///
 /// # Example
