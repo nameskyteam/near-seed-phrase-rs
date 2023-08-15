@@ -1,6 +1,7 @@
 use crate::error::Error;
 use crate::public::NearPublicKey;
 use crate::ToEncodedKey;
+use bip39::rand_core::OsRng;
 use ed25519_dalek::{Signature, SignatureError, Signer, SigningKey};
 use std::fmt::{Display, Formatter};
 
@@ -9,9 +10,9 @@ use std::fmt::{Display, Formatter};
 pub struct NearSecretKey(pub(crate) SigningKey);
 
 impl NearSecretKey {
-    /// To public key
-    pub fn to_public_key(&self) -> NearPublicKey {
-        NearPublicKey(self.0.verifying_key())
+    /// Generate a new secret key.
+    pub fn generate() -> Self {
+        Self(SigningKey::generate(&mut OsRng))
     }
 }
 
@@ -36,6 +37,11 @@ impl NearSecretKey {
     pub fn from_keypair_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let bytes: [u8; 64] = bytes.try_into().map_err(|_| Error::InvalidByteLength)?;
         Ok(SigningKey::from_keypair_bytes(&bytes).map(Self)?)
+    }
+
+    /// To public key
+    pub fn to_public_key(&self) -> NearPublicKey {
+        NearPublicKey(self.0.verifying_key())
     }
 }
 
