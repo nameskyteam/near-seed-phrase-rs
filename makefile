@@ -3,4 +3,4 @@ lint:
 	@cargo clippy --fix --allow-dirty --allow-staged
 
 test:
-	@cargo test
+	@cargo test -- --nocapture
