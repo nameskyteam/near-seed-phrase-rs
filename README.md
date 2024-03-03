@@ -2,9 +2,8 @@
 Similar to [near-seed-phrase](https://github.com/near/near-seed-phrase) but in Rust version
 
 ## Install
-```toml
-[dependencies]
-near-seed-phrase = "*"
+```shell
+cargo add near-seed-phrase
 ```
 
 ## Usage
