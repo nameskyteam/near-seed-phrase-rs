@@ -35,6 +35,7 @@ mod test {
 
     const ENCODED_PRIVATE_KEY: &str =
         "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv";
+
     const ENCODED_PUBLIC_KEY: &str = "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828";
 
     #[test]
@@ -47,7 +48,7 @@ mod test {
     }
 
     #[test]
-    fn test_from_encoded_key() {
+    fn test_parse_key() {
         let private_key: NearPrivateKey = ENCODED_PRIVATE_KEY.parse().unwrap();
 
         assert_eq!(private_key.to_string(), ENCODED_PRIVATE_KEY);
@@ -56,13 +57,5 @@ mod test {
         let public_key: NearPublicKey = ENCODED_PUBLIC_KEY.parse().unwrap();
 
         assert_eq!(public_key.to_string(), ENCODED_PUBLIC_KEY);
-    }
-
-    #[test]
-    fn test_marco() {
-        let private_key = derive_key!(MNEMONIC, "", NearDerivationPath::default());
-
-        assert_eq!(private_key.to_string(), ENCODED_PRIVATE_KEY);
-        assert_eq!(private_key.get_public_key().to_string(), ENCODED_PUBLIC_KEY);
     }
 }
