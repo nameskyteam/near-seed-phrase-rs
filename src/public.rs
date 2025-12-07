@@ -1,5 +1,5 @@
+use crate::encoding::{decode_key, encode_key};
 use crate::error::Error;
-use crate::{NearPrivateKey, ToEncodedKey};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct NearPublicKey(pub(crate) ed25519_dalek::VerifyingKey);
@@ -15,6 +15,21 @@ impl NearPublicKey {
     }
 }
 
+impl std::str::FromStr for NearPublicKey {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let bytes = decode_key(s)?;
+        NearPublicKey::from_bytes(&bytes)
+    }
+}
+
+impl std::fmt::Display for NearPublicKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&encode_key(&self.to_bytes()))
+    }
+}
+
 impl ed25519_dalek::Verifier<ed25519_dalek::Signature> for NearPublicKey {
     fn verify(
         &self,
@@ -22,23 +37,5 @@ impl ed25519_dalek::Verifier<ed25519_dalek::Signature> for NearPublicKey {
         signature: &ed25519_dalek::Signature,
     ) -> Result<(), ed25519_dalek::SignatureError> {
         self.0.verify(msg, signature)
-    }
-}
-
-impl From<NearPrivateKey> for NearPublicKey {
-    fn from(private_key: NearPrivateKey) -> Self {
-        private_key.get_public_key()
-    }
-}
-
-impl From<&NearPrivateKey> for NearPublicKey {
-    fn from(private_key: &NearPrivateKey) -> Self {
-        private_key.get_public_key()
-    }
-}
-
-impl std::fmt::Display for NearPublicKey {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&self.to_encoded_key())
     }
 }

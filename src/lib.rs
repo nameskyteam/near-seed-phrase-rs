@@ -7,7 +7,6 @@ mod private;
 mod public;
 
 pub use ed25519_dalek as ed25519;
-pub use encoding::{FromEncodedKey, ToEncodedKey};
 pub use error::Error;
 pub use mnemonic::NearMnemonic;
 pub use path::NearDerivationPath;
@@ -29,10 +28,7 @@ pub fn derive_key(
 
 #[cfg(test)]
 mod test {
-    use crate::{
-        derive_key, FromEncodedKey, NearDerivationPath, NearMnemonic, NearPrivateKey,
-        NearPublicKey, ToEncodedKey,
-    };
+    use crate::{derive_key, NearDerivationPath, NearMnemonic, NearPrivateKey, NearPublicKey};
 
     const MNEMONIC: &str =
         "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
@@ -46,36 +42,27 @@ mod test {
         let mnemonic = MNEMONIC.parse::<NearMnemonic>().unwrap();
         let private_key = derive_key(&mnemonic, "", &NearDerivationPath::default()).unwrap();
 
-        assert_eq!(private_key.to_encoded_key(), ENCODED_PRIVATE_KEY);
-        assert_eq!(
-            private_key.get_public_key().to_encoded_key(),
-            ENCODED_PUBLIC_KEY
-        );
+        assert_eq!(private_key.to_string(), ENCODED_PRIVATE_KEY);
+        assert_eq!(private_key.get_public_key().to_string(), ENCODED_PUBLIC_KEY);
     }
 
     #[test]
     fn test_from_encoded_key() {
-        let private_key = NearPrivateKey::from_encoded_key(ENCODED_PRIVATE_KEY).unwrap();
+        let private_key: NearPrivateKey = ENCODED_PRIVATE_KEY.parse().unwrap();
 
-        assert_eq!(private_key.to_encoded_key(), ENCODED_PRIVATE_KEY);
-        assert_eq!(
-            private_key.get_public_key().to_encoded_key(),
-            ENCODED_PUBLIC_KEY
-        );
+        assert_eq!(private_key.to_string(), ENCODED_PRIVATE_KEY);
+        assert_eq!(private_key.get_public_key().to_string(), ENCODED_PUBLIC_KEY);
 
-        let public_key = NearPublicKey::from_encoded_key(ENCODED_PUBLIC_KEY).unwrap();
+        let public_key: NearPublicKey = ENCODED_PUBLIC_KEY.parse().unwrap();
 
-        assert_eq!(public_key.to_encoded_key(), ENCODED_PUBLIC_KEY);
+        assert_eq!(public_key.to_string(), ENCODED_PUBLIC_KEY);
     }
 
     #[test]
     fn test_marco() {
         let private_key = derive_key!(MNEMONIC, "", NearDerivationPath::default());
 
-        assert_eq!(private_key.to_encoded_key(), ENCODED_PRIVATE_KEY);
-        assert_eq!(
-            private_key.get_public_key().to_encoded_key(),
-            ENCODED_PUBLIC_KEY
-        );
+        assert_eq!(private_key.to_string(), ENCODED_PRIVATE_KEY);
+        assert_eq!(private_key.get_public_key().to_string(), ENCODED_PUBLIC_KEY);
     }
 }
