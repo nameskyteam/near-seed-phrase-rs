@@ -10,34 +10,34 @@ cargo add near-seed-phrase
 
 ### Basic
 ```rust
-use near_seed_phrase::{derive_key, NearDerivationPath, NearSeedPhrase};
+use near_seed_phrase::{derive_key, NearMnemonic, NearDerivationPath};
 ```
 
 ```rust
 fn example() {
-    let phrase = NearSeedPhrase::generate(12).unwrap();
-    let secret_key = derive_key(&phrase, "", &NearDerivationPath::default()).unwrap();
-    println!("{}", secret_key);
-    println!("{}", secret_key.to_public_key());
+    let mnemonic = NearMnemonic::generate().unwrap();
+    let private_key = derive_key(&mnemonic, "", &NearDerivationPath::default()).unwrap();
+    println!("{}", private_key);
+    println!("{}", private_key.get_public_key());
 }
 ```
 
 ### Macro
 ```rust
-use near_seed_phrase::{derive_key, ToEncodedKey};
+use near_seed_phrase::derive_key;
 ```
 
 ```rust
 fn example() {
     let phrase = "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
-    let secret_key = derive_key!(phrase);
+    let private_key = derive_key!(phrase);
     
     assert_eq!(
-        secret_key.to_encoded_key(),
+        private_key.to_string(),
         "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv"
     );
     assert_eq!(
-        secret_key.to_public_key().to_encoded_key(),
+        private_key.get_public_key().to_string(),
         "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828"
     );
 }
