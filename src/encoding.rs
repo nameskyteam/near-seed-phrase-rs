@@ -1,6 +1,6 @@
 use crate::error::Error;
+use crate::private::NearPrivateKey;
 use crate::public::NearPublicKey;
-use crate::secret::NearSecretKey;
 
 const ED25519_PREFIX: &str = "ed25519:";
 
@@ -8,7 +8,7 @@ pub trait ToEncodedKey {
     fn to_encoded_key(&self) -> String;
 }
 
-impl ToEncodedKey for NearSecretKey {
+impl ToEncodedKey for NearPrivateKey {
     fn to_encoded_key(&self) -> String {
         encode_key(&self.to_keypair_bytes())
     }
@@ -26,18 +26,18 @@ pub trait FromEncodedKey: Sized {
     fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error>;
 }
 
-impl FromEncodedKey for NearSecretKey {
+impl FromEncodedKey for NearPrivateKey {
     type Error = Error;
-    
+
     fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error> {
         let bytes = decode_key(encoded_key)?;
-        NearSecretKey::from_keypair_bytes(&bytes)
+        NearPrivateKey::from_keypair_bytes(&bytes)
     }
 }
 
 impl FromEncodedKey for NearPublicKey {
     type Error = Error;
-    
+
     fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error> {
         let bytes = decode_key(encoded_key)?;
         NearPublicKey::from_bytes(&bytes)

@@ -1,5 +1,5 @@
 use crate::error::Error;
-use crate::{NearSecretKey, ToEncodedKey};
+use crate::{NearPrivateKey, ToEncodedKey};
 use ed25519_dalek::{Signature, SignatureError, Verifier, VerifyingKey};
 use std::fmt::{Display, Formatter};
 
@@ -10,9 +10,9 @@ impl NearPublicKey {
     pub fn to_bytes(&self) -> [u8; 32] {
         self.0.to_bytes()
     }
-    
+
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
-        let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength)?;
+        let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength(32))?;
         Ok(VerifyingKey::from_bytes(&bytes).map(Self)?)
     }
 }
@@ -23,15 +23,15 @@ impl Verifier<Signature> for NearPublicKey {
     }
 }
 
-impl From<NearSecretKey> for NearPublicKey {
-    fn from(secret_key: NearSecretKey) -> Self {
-        secret_key.public_key()
+impl From<NearPrivateKey> for NearPublicKey {
+    fn from(private_key: NearPrivateKey) -> Self {
+        private_key.get_public_key()
     }
 }
 
-impl From<&NearSecretKey> for NearPublicKey {
-    fn from(secret_key: &NearSecretKey) -> Self {
-        secret_key.public_key()
+impl From<&NearPrivateKey> for NearPublicKey {
+    fn from(private_key: &NearPrivateKey) -> Self {
+        private_key.get_public_key()
     }
 }
 

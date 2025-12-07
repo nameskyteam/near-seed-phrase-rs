@@ -1,8 +1,8 @@
 #[derive(std::fmt::Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum Error {
-    #[error("invalid byte length")]
-    InvalidByteLength,
+    #[error("invalid byte length, expect {0}")]
+    InvalidByteLength(usize),
 
     #[error("{0}")]
     Slip10Error(slipped10::Error),

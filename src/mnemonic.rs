@@ -4,10 +4,10 @@ use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct NearSeedPhrase(pub(crate) Mnemonic);
+pub struct NearMnemonic(pub(crate) Mnemonic);
 
 #[cfg(feature = "rand")]
-impl NearSeedPhrase {
+impl NearMnemonic {
     pub fn generate() -> Result<Self, Error> {
         Self::generate_of(12)
     }
@@ -17,7 +17,7 @@ impl NearSeedPhrase {
     }
 }
 
-impl NearSeedPhrase {
+impl NearMnemonic {
     pub fn word_count(&self) -> usize {
         self.0.word_count()
     }
@@ -28,30 +28,29 @@ impl NearSeedPhrase {
 }
 
 #[doc(hidden)]
-impl NearSeedPhrase {
-
+impl NearMnemonic {
     pub fn parse<T>(&self) -> Result<&Self, Error> {
         Ok(self)
     }
 }
 
-impl FromStr for NearSeedPhrase {
+impl FromStr for NearMnemonic {
     type Err = Error;
 
-    fn from_str(phrase: &str) -> Result<Self, Self::Err> {
-        Ok(phrase.parse().map(Self)?)
+    fn from_str(mnemonic: &str) -> Result<Self, Self::Err> {
+        Ok(mnemonic.parse().map(Self)?)
     }
 }
 
-impl TryFrom<String> for NearSeedPhrase {
+impl TryFrom<String> for NearMnemonic {
     type Error = Error;
 
-    fn try_from(phrase: String) -> Result<Self, Self::Error> {
-        Ok(phrase.parse().map(Self)?)
+    fn try_from(mnemonic: String) -> Result<Self, Self::Error> {
+        Ok(mnemonic.parse().map(Self)?)
     }
 }
 
-impl Display for NearSeedPhrase {
+impl Display for NearMnemonic {
     fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         Display::fmt(&self.0, f)
     }

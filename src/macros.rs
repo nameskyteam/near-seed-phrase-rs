@@ -1,15 +1,14 @@
-/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) with given seed phrase, passphrase and derivation path.
-/// Invalid seed phrase or derivation path will cause panic.
+/// Derive [`NearPrivateKey`](crate::private::NearPrivateKey) with given mnemonic, passphrase and derivation path.
 ///
 /// # Example
 /// ```
 /// use near_seed_phrase::{derive_key, ToEncodedKey};
 ///
-/// let phrase = "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
-/// let secret_key = derive_key!(phrase);
+/// let mnemonic = "fortune conduct light unusual gloom process wrap spare season exact anchor devote";
+/// let private_key = derive_key!(mnemonic);
 ///
-/// assert_eq!(secret_key.to_encoded_key(), "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
-/// assert_eq!(secret_key.public_key().to_encoded_key(), "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
+/// assert_eq!(private_key.to_encoded_key(), "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
+/// assert_eq!(private_key.get_public_key().to_encoded_key(), "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
 /// ```
 #[macro_export]
 macro_rules! derive_key {
@@ -31,8 +30,8 @@ macro_rules! __derive_key {
         $crate::derive_key(
             std::borrow::Borrow::borrow(
                 &$phrase
-                    .parse::<$crate::NearSeedPhrase>()
-                    .expect("failed to parse `NearSeedPhrase`"),
+                    .parse::<$crate::NearMnemonic>()
+                    .expect("failed to parse `NearMnemonic`"),
             ),
             $passphrase.as_ref(),
             std::borrow::Borrow::borrow(

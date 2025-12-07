@@ -10,15 +10,15 @@ const NEAR_DERIVATION_PATH_DEFAULT_LEDGER: &str = "m/44'/397'/0'/0'/1'";
 pub struct NearDerivationPath(pub(crate) BIP32Path);
 
 impl NearDerivationPath {
-    pub fn default_ledger() -> Self {
-        Self(NEAR_DERIVATION_PATH_DEFAULT_LEDGER.parse().unwrap())
+    #[doc(hidden)]
+    pub fn parse<T>(&self) -> Result<&Self, Error> {
+        Ok(self)
     }
 }
 
 impl NearDerivationPath {
-    #[doc(hidden)]
-    pub fn parse<T>(&self) -> Result<&Self, Error> {
-        Ok(self)
+    pub fn default_ledger() -> Self {
+        Self(NEAR_DERIVATION_PATH_DEFAULT_LEDGER.parse().unwrap())
     }
 }
 
