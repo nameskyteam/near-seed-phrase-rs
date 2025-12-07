@@ -12,24 +12,28 @@
 /// ```
 #[macro_export]
 macro_rules! derive_key {
-    ($phrase:expr) => {
-        $crate::__derive_key!($phrase, "", $crate::NearDerivationPath::default())
+    ($mnemonic:expr) => {
+        $crate::__derive_key!($mnemonic, "", $crate::NearDerivationPath::default())
     };
-    ($phrase:expr, $passphrase:expr) => {
-        $crate::__derive_key!($phrase, $passphrase, $crate::NearDerivationPath::default())
+    ($mnemonic:expr, $passphrase:expr) => {
+        $crate::__derive_key!(
+            $mnemonic,
+            $passphrase,
+            $crate::NearDerivationPath::default()
+        )
     };
-    ($phrase:expr, $passphrase:expr, $path:expr) => {
-        $crate::__derive_key!($phrase, $passphrase, $path)
+    ($mnemonic:expr, $passphrase:expr, $path:expr) => {
+        $crate::__derive_key!($mnemonic, $passphrase, $path)
     };
 }
 
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __derive_key {
-    ($phrase:expr, $passphrase:expr, $path:expr) => {
+    ($mnemonic:expr, $passphrase:expr, $path:expr) => {
         $crate::derive_key(
             std::borrow::Borrow::borrow(
-                &$phrase
+                &$mnemonic
                     .parse::<$crate::NearMnemonic>()
                     .expect("failed to parse `NearMnemonic`"),
             ),
