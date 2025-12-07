@@ -1,6 +1,6 @@
 use crate::error::Error;
 
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct NearMnemonic(pub(crate) bip39::Mnemonic);
 
 #[cfg(feature = "rand")]

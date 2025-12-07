@@ -2,7 +2,7 @@ use crate::encoding::{decode_key, encode_key};
 use crate::error::Error;
 use crate::public::NearPublicKey;
 
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct NearPrivateKey(pub(crate) ed25519_dalek::SigningKey);
 
 #[cfg(feature = "rand")]

@@ -1,7 +1,7 @@
 use crate::encoding::{decode_key, encode_key};
 use crate::error::Error;
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct NearPublicKey(pub(crate) ed25519_dalek::VerifyingKey);
 
 impl NearPublicKey {
