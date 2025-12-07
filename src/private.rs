@@ -1,16 +1,14 @@
 use crate::error::Error;
 use crate::public::NearPublicKey;
 use crate::ToEncodedKey;
-use ed25519_dalek::{Signature, SignatureError, Signer, SigningKey};
-use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Debug)]
-pub struct NearPrivateKey(pub(crate) SigningKey);
+pub struct NearPrivateKey(pub(crate) ed25519_dalek::SigningKey);
 
 #[cfg(feature = "rand")]
 impl NearPrivateKey {
     pub fn generate() -> Self {
-        Self(SigningKey::generate(&mut rand::thread_rng()))
+        Self(ed25519_dalek::SigningKey::generate(&mut rand::thread_rng()))
     }
 }
 
@@ -25,12 +23,12 @@ impl NearPrivateKey {
 
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength(32))?;
-        Ok(Self(SigningKey::from_bytes(&bytes)))
+        Ok(Self(ed25519_dalek::SigningKey::from_bytes(&bytes)))
     }
 
     pub fn from_keypair_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let bytes: [u8; 64] = bytes.try_into().map_err(|_| Error::InvalidByteLength(64))?;
-        Ok(SigningKey::from_keypair_bytes(&bytes).map(Self)?)
+        Ok(ed25519_dalek::SigningKey::from_keypair_bytes(&bytes).map(Self)?)
     }
 
     pub fn get_public_key(&self) -> NearPublicKey {
@@ -38,14 +36,17 @@ impl NearPrivateKey {
     }
 }
 
-impl Signer<Signature> for NearPrivateKey {
-    fn try_sign(&self, msg: &[u8]) -> Result<Signature, SignatureError> {
+impl ed25519_dalek::Signer<ed25519_dalek::Signature> for NearPrivateKey {
+    fn try_sign(
+        &self,
+        msg: &[u8],
+    ) -> Result<ed25519_dalek::Signature, ed25519_dalek::SignatureError> {
         self.0.try_sign(msg)
     }
 }
 
-impl Display for NearPrivateKey {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl std::fmt::Display for NearPrivateKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(&self.to_encoded_key())
     }
 }

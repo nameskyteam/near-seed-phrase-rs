@@ -1,10 +1,8 @@
 use crate::error::Error;
 use crate::{NearPrivateKey, ToEncodedKey};
-use ed25519_dalek::{Signature, SignatureError, Verifier, VerifyingKey};
-use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct NearPublicKey(pub(crate) VerifyingKey);
+pub struct NearPublicKey(pub(crate) ed25519_dalek::VerifyingKey);
 
 impl NearPublicKey {
     pub fn to_bytes(&self) -> [u8; 32] {
@@ -13,12 +11,16 @@ impl NearPublicKey {
 
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
         let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength(32))?;
-        Ok(VerifyingKey::from_bytes(&bytes).map(Self)?)
+        Ok(ed25519_dalek::VerifyingKey::from_bytes(&bytes).map(Self)?)
     }
 }
 
-impl Verifier<Signature> for NearPublicKey {
-    fn verify(&self, msg: &[u8], signature: &Signature) -> Result<(), SignatureError> {
+impl ed25519_dalek::Verifier<ed25519_dalek::Signature> for NearPublicKey {
+    fn verify(
+        &self,
+        msg: &[u8],
+        signature: &ed25519_dalek::Signature,
+    ) -> Result<(), ed25519_dalek::SignatureError> {
         self.0.verify(msg, signature)
     }
 }
@@ -35,8 +37,8 @@ impl From<&NearPrivateKey> for NearPublicKey {
     }
 }
 
-impl Display for NearPublicKey {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl std::fmt::Display for NearPublicKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(&self.to_encoded_key())
     }
 }

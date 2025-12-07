@@ -1,10 +1,7 @@
 use crate::error::Error;
-use bip39::Mnemonic;
-use std::fmt::{Display, Formatter};
-use std::str::FromStr;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct NearMnemonic(pub(crate) Mnemonic);
+pub struct NearMnemonic(pub(crate) bip39::Mnemonic);
 
 #[cfg(feature = "rand")]
 impl NearMnemonic {
@@ -13,7 +10,7 @@ impl NearMnemonic {
     }
 
     pub fn generate_of(word_count: usize) -> Result<Self, Error> {
-        Ok(Mnemonic::generate(word_count).map(Self)?)
+        Ok(bip39::Mnemonic::generate(word_count).map(Self)?)
     }
 }
 
@@ -34,7 +31,7 @@ impl NearMnemonic {
     }
 }
 
-impl FromStr for NearMnemonic {
+impl std::str::FromStr for NearMnemonic {
     type Err = Error;
 
     fn from_str(mnemonic: &str) -> Result<Self, Self::Err> {
@@ -50,8 +47,8 @@ impl TryFrom<String> for NearMnemonic {
     }
 }
 
-impl Display for NearMnemonic {
-    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-        Display::fmt(&self.0, f)
+impl std::fmt::Display for NearMnemonic {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> core::fmt::Result {
+        std::fmt::Display::fmt(&self.0, f)
     }
 }
