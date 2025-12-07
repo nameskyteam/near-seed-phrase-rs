@@ -3,6 +3,13 @@ use crate::error::Error;
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub struct NearMnemonic(pub(crate) bip39::Mnemonic);
 
+impl NearMnemonic {
+    #[doc(hidden)]
+    pub fn parse<T>(&self) -> Result<&Self, Error> {
+        Ok(self)
+    }
+}
+
 #[cfg(feature = "rand")]
 impl NearMnemonic {
     pub fn generate() -> Result<Self, Error> {
@@ -24,25 +31,10 @@ impl NearMnemonic {
     }
 }
 
-#[doc(hidden)]
-impl NearMnemonic {
-    pub fn parse<T>(&self) -> Result<&Self, Error> {
-        Ok(self)
-    }
-}
-
 impl std::str::FromStr for NearMnemonic {
     type Err = Error;
 
     fn from_str(mnemonic: &str) -> Result<Self, Self::Err> {
-        Ok(mnemonic.parse().map(Self)?)
-    }
-}
-
-impl TryFrom<String> for NearMnemonic {
-    type Error = Error;
-
-    fn try_from(mnemonic: String) -> Result<Self, Self::Error> {
         Ok(mnemonic.parse().map(Self)?)
     }
 }

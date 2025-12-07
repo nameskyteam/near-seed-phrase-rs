@@ -1,6 +1,6 @@
-use crate::encoding::{decode_key, encode_key};
 use crate::error::Error;
 use crate::public::NearPublicKey;
+use crate::utils::{decode_key, encode_key};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct NearPrivateKey(pub(crate) ed25519_dalek::SigningKey);
@@ -39,8 +39,8 @@ impl NearPrivateKey {
 impl std::str::FromStr for NearPrivateKey {
     type Err = Error;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = decode_key(s)?;
+    fn from_str(private_key: &str) -> Result<Self, Self::Err> {
+        let bytes = decode_key(private_key)?;
         NearPrivateKey::from_keypair_bytes(&bytes)
     }
 }
@@ -54,8 +54,8 @@ impl std::fmt::Display for NearPrivateKey {
 impl ed25519_dalek::Signer<ed25519_dalek::Signature> for NearPrivateKey {
     fn try_sign(
         &self,
-        msg: &[u8],
+        message: &[u8],
     ) -> Result<ed25519_dalek::Signature, ed25519_dalek::SignatureError> {
-        self.0.try_sign(msg)
+        self.0.try_sign(message)
     }
 }

@@ -33,14 +33,6 @@ impl std::str::FromStr for NearDerivationPath {
     }
 }
 
-impl TryFrom<String> for NearDerivationPath {
-    type Error = Error;
-
-    fn try_from(path: String) -> Result<Self, Self::Error> {
-        Ok(path.parse().map(Self)?)
-    }
-}
-
 impl std::fmt::Display for NearDerivationPath {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> core::fmt::Result {
         std::fmt::Display::fmt(&self.0, f)

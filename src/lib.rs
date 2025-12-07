@@ -1,10 +1,10 @@
-mod encoding;
 mod error;
 mod macros;
 mod mnemonic;
 mod path;
 mod private;
 mod public;
+mod utils;
 
 pub use ed25519_dalek as ed25519;
 pub use error::Error;

@@ -1,5 +1,5 @@
-use crate::encoding::{decode_key, encode_key};
 use crate::error::Error;
+use crate::utils::{decode_key, encode_key};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct NearPublicKey(pub(crate) ed25519_dalek::VerifyingKey);
@@ -18,8 +18,8 @@ impl NearPublicKey {
 impl std::str::FromStr for NearPublicKey {
     type Err = Error;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = decode_key(s)?;
+    fn from_str(public_key: &str) -> Result<Self, Self::Err> {
+        let bytes = decode_key(public_key)?;
         NearPublicKey::from_bytes(&bytes)
     }
 }
@@ -33,9 +33,9 @@ impl std::fmt::Display for NearPublicKey {
 impl ed25519_dalek::Verifier<ed25519_dalek::Signature> for NearPublicKey {
     fn verify(
         &self,
-        msg: &[u8],
+        message: &[u8],
         signature: &ed25519_dalek::Signature,
     ) -> Result<(), ed25519_dalek::SignatureError> {
-        self.0.verify(msg, signature)
+        self.0.verify(message, signature)
     }
 }
