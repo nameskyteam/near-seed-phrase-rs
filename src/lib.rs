@@ -15,14 +15,14 @@ pub use secret::NearSecretKey;
 
 pub use ed25519_dalek::{Signature, SignatureError, Signer, Verifier};
 
-/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) with given seed phrase, password and derivation path.
+/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) with given seed phrase, passphrase and derivation path.
 pub fn derive_key(
     phrase: &NearSeedPhrase,
-    password: &str,
+    passphrase: &str,
     path: &NearDerivationPath,
 ) -> Result<NearSecretKey, Error> {
     let key =
-        slip10::derive_key_from_path(&phrase.0.to_seed(password), slip10::Curve::Ed25519, &path.0)?;
+        slipped10::derive_key_from_path(&phrase.0.to_seed(passphrase), slipped10::Curve::Ed25519, &path.0)?;
     NearSecretKey::from_bytes(&key.key)
 }
 
@@ -47,7 +47,7 @@ mod test {
 
         assert_eq!(secret_key.to_encoded_key(), ENCODED_SECRET_KEY);
         assert_eq!(
-            secret_key.to_public_key().to_encoded_key(),
+            secret_key.public_key().to_encoded_key(),
             ENCODED_PUBLIC_KEY
         );
     }
@@ -58,7 +58,7 @@ mod test {
 
         assert_eq!(secret_key.to_encoded_key(), ENCODED_SECRET_KEY);
         assert_eq!(
-            secret_key.to_public_key().to_encoded_key(),
+            secret_key.public_key().to_encoded_key(),
             ENCODED_PUBLIC_KEY
         );
 
@@ -73,7 +73,7 @@ mod test {
 
         assert_eq!(secret_key.to_encoded_key(), ENCODED_SECRET_KEY);
         assert_eq!(
-            secret_key.to_public_key().to_encoded_key(),
+            secret_key.public_key().to_encoded_key(),
             ENCODED_PUBLIC_KEY
         );
     }

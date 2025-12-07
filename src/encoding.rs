@@ -9,14 +9,12 @@ pub trait ToEncodedKey {
 }
 
 impl ToEncodedKey for NearSecretKey {
-    /// Encode raw keypair bytes to NEAR secret key string. **NEAR use keypair as secret key**.
     fn to_encoded_key(&self) -> String {
         encode_key(&self.to_keypair_bytes())
     }
 }
 
 impl ToEncodedKey for NearPublicKey {
-    /// Encode raw bytes to NEAR public key string.
     fn to_encoded_key(&self) -> String {
         encode_key(&self.to_bytes())
     }
@@ -30,8 +28,7 @@ pub trait FromEncodedKey: Sized {
 
 impl FromEncodedKey for NearSecretKey {
     type Error = Error;
-
-    /// Decode from NEAR secret key string (actually an encoded keypair string).
+    
     fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error> {
         let bytes = decode_key(encoded_key)?;
         NearSecretKey::from_keypair_bytes(&bytes)
@@ -40,8 +37,7 @@ impl FromEncodedKey for NearSecretKey {
 
 impl FromEncodedKey for NearPublicKey {
     type Error = Error;
-
-    /// Decode from NEAR public key string.
+    
     fn from_encoded_key(encoded_key: &str) -> Result<Self, Self::Error> {
         let bytes = decode_key(encoded_key)?;
         NearPublicKey::from_bytes(&bytes)

@@ -3,29 +3,33 @@ use bip39::Mnemonic;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
-/// NEAR BIP39 seed phrase.
-///
-/// Supported number of words are 12, 15, 18, 21, and 24.
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct NearSeedPhrase(pub(crate) Mnemonic);
 
+#[cfg(feature = "rand")]
 impl NearSeedPhrase {
-    /// Generate a new seed phrase.
-    pub fn generate(word_count: usize) -> Result<Self, Error> {
+    pub fn generate() -> Result<Self, Error> {
+        Self::generate_of(12)
+    }
+
+    pub fn generate_of(word_count: usize) -> Result<Self, Error> {
         Ok(Mnemonic::generate(word_count).map(Self)?)
-    }
-
-    pub fn word_count(&self) -> usize {
-        self.0.word_count()
-    }
-
-    pub fn to_word_list(&self) -> Vec<String> {
-        self.0.word_iter().map(|word| word.to_string()).collect()
     }
 }
 
 impl NearSeedPhrase {
-    #[doc(hidden)]
+    pub fn word_count(&self) -> usize {
+        self.0.word_count()
+    }
+
+    pub fn words(&self) -> Vec<String> {
+        self.0.words().map(|word| word.to_string()).collect()
+    }
+}
+
+#[doc(hidden)]
+impl NearSeedPhrase {
+
     pub fn parse<T>(&self) -> Result<&Self, Error> {
         Ok(self)
     }

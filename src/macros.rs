@@ -1,4 +1,4 @@
-/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) with given seed phrase, password and derivation path.
+/// Derive [`NearSecretKey`](crate::secret::NearSecretKey) with given seed phrase, passphrase and derivation path.
 /// Invalid seed phrase or derivation path will cause panic.
 ///
 /// # Example
@@ -9,38 +9,38 @@
 /// let secret_key = derive_key!(phrase);
 ///
 /// assert_eq!(secret_key.to_encoded_key(), "ed25519:G94YBVktAVUFZWvYBtYmfpvVMNCtSf2x73bMfTCM9CfzyrUyN5X6VpTqr8QTCHYBTdUfzufDsTy3cR9CfNf74Bv");
-/// assert_eq!(secret_key.to_public_key().to_encoded_key(), "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
+/// assert_eq!(secret_key.public_key().to_encoded_key(), "ed25519:2PQENDq3KABdr7cw1TH5B4AdXLqcyNXTTpWbdZh7k828");
 /// ```
 #[macro_export]
 macro_rules! derive_key {
     ($phrase:expr) => {
         $crate::__derive_key!($phrase, "", $crate::NearDerivationPath::default())
     };
-    ($phrase:expr, $password:expr) => {
-        $crate::__derive_key!($phrase, $password, $crate::NearDerivationPath::default())
+    ($phrase:expr, $passphrase:expr) => {
+        $crate::__derive_key!($phrase, $passphrase, $crate::NearDerivationPath::default())
     };
-    ($phrase:expr, $password:expr, $path:expr) => {
-        $crate::__derive_key!($phrase, $password, $path)
+    ($phrase:expr, $passphrase:expr, $path:expr) => {
+        $crate::__derive_key!($phrase, $passphrase, $path)
     };
 }
 
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __derive_key {
-    ($phrase:expr, $password:expr, $path:expr) => {
+    ($phrase:expr, $passphrase:expr, $path:expr) => {
         $crate::derive_key(
             std::borrow::Borrow::borrow(
                 &$phrase
                     .parse::<$crate::NearSeedPhrase>()
-                    .expect("Failed to parse `NearSeedPhrase`"),
+                    .expect("failed to parse `NearSeedPhrase`"),
             ),
-            $password.as_ref(),
+            $passphrase.as_ref(),
             std::borrow::Borrow::borrow(
                 &$path
                     .parse::<$crate::NearDerivationPath>()
-                    .expect("Failed to parse `NearDerivationPath`"),
+                    .expect("failed to parse `NearDerivationPath`"),
             ),
         )
-        .expect("Failed to derive key")
+        .expect("failed to derive key")
     };
 }
