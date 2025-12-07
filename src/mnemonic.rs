@@ -12,8 +12,8 @@ impl NearMnemonic {
 
 #[cfg(feature = "rand")]
 impl NearMnemonic {
-    pub fn generate() -> Result<Self, Error> {
-        Self::generate_of(12)
+    pub fn generate() -> Self {
+        Self::generate_of(12).unwrap()
     }
 
     pub fn generate_of(word_count: usize) -> Result<Self, Error> {
