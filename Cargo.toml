@@ -1,16 +1,22 @@
 [package]
 name = "near-seed-phrase"
-version = "0.3.3"
+version = "1.0.0"
 edition = "2021"
-description = "Convert NEAR seed phrase to secret key"
+description = "NEAR Seed Phrase"
 license = "MIT"
-readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-thiserror = "1.0.44"
-bip39 = { version = "2.0.0", features = [ "rand" ] }
-slip10 = "0.4.3"
-ed25519-dalek = { version = "2.0.0", features = ["rand_core"] }
+bip39 = "2.2.0"
+ed25519-dalek = "2.2.0"
+thiserror = "2.0.0"
+slipped10 = "0.4.0"
 bs58 = "0.5.0"
+rand = "0.8.0"
+
+[features]
+rand = [
+    "bip39/rand",
+    "ed25519-dalek/rand_core"
+]

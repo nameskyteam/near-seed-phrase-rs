@@ -1,45 +1,41 @@
 use crate::error::Error;
-use crate::{NearSecretKey, ToEncodedKey};
-use ed25519_dalek::{Signature, SignatureError, Verifier, VerifyingKey};
-use std::fmt::{Display, Formatter};
+use crate::utils::{decode_key, encode_key};
 
-/// NEAR ed25519 public key
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct NearPublicKey(pub(crate) VerifyingKey);
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct NearPublicKey(pub(crate) ed25519_dalek::VerifyingKey);
 
 impl NearPublicKey {
-    /// To raw public key
     pub fn to_bytes(&self) -> [u8; 32] {
         self.0.to_bytes()
     }
 
-    /// From raw public key
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, Error> {
-        let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength)?;
-        Ok(VerifyingKey::from_bytes(&bytes).map(Self)?)
+        let bytes: [u8; 32] = bytes.try_into().map_err(|_| Error::InvalidByteLength(32))?;
+        Ok(ed25519_dalek::VerifyingKey::from_bytes(&bytes).map(Self)?)
     }
 }
 
-impl Verifier<Signature> for NearPublicKey {
-    fn verify(&self, msg: &[u8], signature: &Signature) -> Result<(), SignatureError> {
-        self.0.verify(msg, signature)
+impl std::str::FromStr for NearPublicKey {
+    type Err = Error;
+
+    fn from_str(public_key: &str) -> Result<Self, Self::Err> {
+        let bytes = decode_key(public_key)?;
+        NearPublicKey::from_bytes(&bytes)
     }
 }
 
-impl From<NearSecretKey> for NearPublicKey {
-    fn from(secret_key: NearSecretKey) -> Self {
-        secret_key.to_public_key()
+impl std::fmt::Display for NearPublicKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&encode_key(&self.to_bytes()))
     }
 }
 
-impl From<&NearSecretKey> for NearPublicKey {
-    fn from(secret_key: &NearSecretKey) -> Self {
-        secret_key.to_public_key()
-    }
-}
-
-impl Display for NearPublicKey {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&self.to_encoded_key())
+impl ed25519_dalek::Verifier<ed25519_dalek::Signature> for NearPublicKey {
+    fn verify(
+        &self,
+        message: &[u8],
+        signature: &ed25519_dalek::Signature,
+    ) -> Result<(), ed25519_dalek::SignatureError> {
+        self.0.verify(message, signature)
     }
 }

@@ -1,21 +1,10 @@
 use crate::error::Error;
-use slip10::BIP32Path;
-use std::fmt::{Debug, Display, Formatter};
-use std::str::FromStr;
 
 const NEAR_DERIVATION_PATH_DEFAULT: &str = "m/44'/397'/0'";
-const NEAR_DERIVATION_PATH_LEDGER: &str = "m/44'/397'/0'/0'/1'";
+const NEAR_DERIVATION_PATH_DEFAULT_LEDGER: &str = "m/44'/397'/0'/0'/1'";
 
-/// NEAR BIP32 derivation path.
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub struct NearDerivationPath(pub(crate) BIP32Path);
-
-impl NearDerivationPath {
-    /// NEAR derivation path for Ledger.
-    pub fn ledger() -> Self {
-        Self(NEAR_DERIVATION_PATH_LEDGER.parse().unwrap())
-    }
-}
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub struct NearDerivationPath(pub(crate) slipped10::BIP32Path);
 
 impl NearDerivationPath {
     #[doc(hidden)]
@@ -24,14 +13,19 @@ impl NearDerivationPath {
     }
 }
 
+impl NearDerivationPath {
+    pub fn default_ledger() -> Self {
+        Self(NEAR_DERIVATION_PATH_DEFAULT_LEDGER.parse().unwrap())
+    }
+}
+
 impl Default for NearDerivationPath {
-    /// NEAR derivation path by default.
     fn default() -> Self {
         Self(NEAR_DERIVATION_PATH_DEFAULT.parse().unwrap())
     }
 }
 
-impl FromStr for NearDerivationPath {
+impl std::str::FromStr for NearDerivationPath {
     type Err = Error;
 
     fn from_str(path: &str) -> Result<Self, Self::Err> {
@@ -39,16 +33,8 @@ impl FromStr for NearDerivationPath {
     }
 }
 
-impl TryFrom<String> for NearDerivationPath {
-    type Error = Error;
-
-    fn try_from(path: String) -> Result<Self, Self::Error> {
-        Ok(path.parse().map(Self)?)
-    }
-}
-
-impl Display for NearDerivationPath {
-    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-        Display::fmt(&self.0, f)
+impl std::fmt::Display for NearDerivationPath {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> core::fmt::Result {
+        std::fmt::Display::fmt(&self.0, f)
     }
 }
