@@ -244,9 +244,20 @@ dependencies = [
  "bip39",
  "bs58",
  "ed25519-dalek",
+ "near-slip10",
  "rand",
- "slipped10",
  "thiserror",
+]
+
+[[package]]
+name = "near-slip10"
+version = "0.4.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f476bc5f8bcb36242d25ef252ce43edb22d4dfb8dcdd1b61812c7c9a7594400f"
+dependencies = [
+ "ed25519-dalek",
+ "hmac",
+ "sha2 0.9.9",
 ]
 
 [[package]]
@@ -371,17 +382,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "77549399552de45a898a580c1b41d445bf730df867cc44e6c0233bbc4b8329de"
 dependencies = [
  "rand_core",
-]
-
-[[package]]
-name = "slipped10"
-version = "0.4.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a45443e66aa5d96db5e02d17db056e1ca970232a4fe73e1f9bc1816d68f4e98"
-dependencies = [
- "ed25519-dalek",
- "hmac",
- "sha2 0.9.9",
 ]
 
 [[package]]
