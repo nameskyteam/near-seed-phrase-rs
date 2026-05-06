@@ -4,7 +4,7 @@ const NEAR_DERIVATION_PATH_DEFAULT: &str = "m/44'/397'/0'";
 const NEAR_DERIVATION_PATH_DEFAULT_LEDGER: &str = "m/44'/397'/0'/0'/1'";
 
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub struct NearDerivationPath(pub(crate) slipped10::BIP32Path);
+pub struct NearDerivationPath(pub(crate) near_slip10::BIP32Path);
 
 impl NearDerivationPath {
     #[doc(hidden)]

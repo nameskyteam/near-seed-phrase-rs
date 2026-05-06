@@ -18,9 +18,9 @@ pub fn derive_key(
     passphrase: &str,
     path: &NearDerivationPath,
 ) -> Result<NearPrivateKey, Error> {
-    let key = slipped10::derive_key_from_path(
+    let key = near_slip10::derive_key_from_path(
         &mnemonic.0.to_seed(passphrase),
-        slipped10::Curve::Ed25519,
+        near_slip10::Curve::Ed25519,
         &path.0,
     )?;
     NearPrivateKey::from_bytes(&key.key)
